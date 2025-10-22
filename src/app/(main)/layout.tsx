@@ -1,3 +1,4 @@
+import NavigationMenuDemo from "@/components/navbar"
 export default function MainLayout({
   children,
 }: {
@@ -5,6 +6,7 @@ export default function MainLayout({
 }) {
   return (
     <>
+      <NavigationMenuDemo />
       {children}
     </>
   );
