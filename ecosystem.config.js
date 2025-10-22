@@ -1,21 +1,21 @@
 module.exports = {
   apps: [
     {
-      name: "rahaan",                   // اسم اپ در PM2
-      script: "npm",                    // فرمان اصلی برای اجرا
-      args: "run start",                // آرگومان برای npm
-      cwd: "C:\\RahaanWeb\\newRahaan\\newrahaan", // مسیر پوشه‌ی پروژه
-      interpreter: "cmd.exe",           // مخصوص ویندوز تا npm درست کار کنه
+      name: "rahaan",
+      script: "npm",
+      args: "run start",
+      cwd: "C:\\RahaanWeb\\newRahaan\\newrahaan",
+      interpreter: "cmd.exe",
       env: {
-        NODE_ENV: "production",         // محیط اجرا
-        PORT: 3000                      // پورتی که سایت بالا میاد
+        NODE_ENV: "production",      
+        PORT: 3000       
       },
-      watch: false,                     // برای حالت production نیازی نیست
-      autorestart: true,                // اگه ارور بده خودش ری‌استارت میشه
-      max_memory_restart: "512M",       // ری‌استارت اگه حافظه بالا رفت
-      error_file: "logs/rahaan-error.log", // مسیر لاگ خطاها
-      out_file: "logs/rahaan-out.log",     // مسیر لاگ خروجی
-      time: true                        // زمان رو کنار لاگ‌ها نشون میده
+      watch: false,                    
+      autorestart: true,  
+      max_memory_restart: "512M", 
+      error_file: "logs/rahaan-error.log",
+      out_file: "logs/rahaan-out.log",
+      time: true 
     }
   ]
 };
