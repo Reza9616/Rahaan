@@ -45,7 +45,7 @@ import {
 	AccordionItem,
 	AccordionTrigger,
 } from '@/components/ui/accordion';
-import { cn } from '@/lib/utils';
+import Logo from "./Logo";
 
 export const productLinks: NavItemType[] = [
 	{
@@ -146,7 +146,7 @@ export const companyLinks: NavItemType[] = [
 
 export default function NavigationMenuDemo() {
 	return (
-		<div className="relative w-full px-6 py-4 lg:px-12 bg-oneBg">
+		<div className="relative w-full px-6 py-4 lg:px-12 bg-accent">
 			{/* <div
 				aria-hidden="true"
 				className={cn(
@@ -156,18 +156,9 @@ export default function NavigationMenuDemo() {
 				)}
 			/> */}
 
-			<div className="bg-oneBg sticky top-1/4 z-50 mx-auto h-14 w-full max-w-7xl px-4  rounded-lg">
+			<div className="bg-accent sticky top-1/4 z-50 mx-auto h-14 w-full max-w-7xl sm:px-4 rounded-lg">
 				<div className="flex h-full items-center justify-between">
-					<div className="flex items-center gap-2">
-						<Image 
-                            width={24} 
-                            height={24}
-                            className=""
-                            src="/Rahaan.png"
-                            alt=""
-                        />
-						<p className="font-mono text-lg font-bold">رهان</p>
-					</div>
+					<Logo />
 					<DesktopMenu />
 
 					<div className="flex items-center gap-2">
@@ -250,12 +241,12 @@ function DesktopMenu() {
 function MoileNav() {
 	const sections = [
 		{
-			id: 'product',
+			id: 'محصولات',
 			name: 'Product',
 			list: productLinks,
 		},
 		{
-			id: 'company',
+			id: 'رهان',
 			name: 'Company',
 			list: companyLinks,
 		},
@@ -264,8 +255,8 @@ function MoileNav() {
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
-				<Button size="icon" variant="ghost" className="rounded-full lg:hidden">
-					<MenuIcon className="size-5" />
+				<Button size="icon" variant="ghost" className="rounded-full lg:hidden w-auto h-a4">
+					<MenuIcon className="size-6" />
 				</Button>
 			</SheetTrigger>
 			<SheetContent

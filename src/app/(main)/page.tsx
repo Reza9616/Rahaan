@@ -1,7 +1,7 @@
-import Service from "@/components/Service";
 import Hero from "@/components/Hero";
+import Service from "@/components/Service";
 import Customer from "@/components/Customer";
-import Finance from "@/components/Finance";
+import Plan from "@/components/Plan";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -11,7 +11,7 @@ export default function Home() {
       <Hero />
       <Service />
       <Customer />
-      <Finance />
+      <Plan />
     </main>
     <Footer />
   </>

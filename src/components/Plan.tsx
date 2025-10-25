@@ -1,7 +1,8 @@
 import Image from "next/image";
-export default function Customer() {
+import { Container } from "./ui/Container";
+export default function Plan() {
     return (
-    <>
+    <Container>
     <section className="mx-6 my-6 py-18 flex flex-col md:flex-row gap-x-6 space-y-6 md:space-y-0">
         <section className="bg-oneBg md:w-1/2 aspect-square md:aspect-auto rounded-2xl flex items-center justify-center">
           <figure>
@@ -19,7 +20,7 @@ export default function Customer() {
           <p className="font-light">ما باور داریم مدیریت مالی نباید پیچیده باشه. نرم‌افزارهای ما طوری طراحی شدن که با نوع کار شما هماهنگ بشن — چه فروشگاه باشی، چه شرکت خدماتی یا تولیدی. تمرکز ما روی سه چیزه: سادگی، دقت و اطمینان.</p>
           <button className="hover:bg-oneBg w-fit px-4 py-3 rounded-3xl font-medium bg-fourBg text-Paragraph transition-colors duration-300 text-sm">بیشتر بدانید</button>
         </section>
-      </section>
+    </section>
 
       <section>
         <section className="flex flex-col space-y-15 items-center py-40 px-6 sm:px-20 lg:px-30">
@@ -27,5 +28,5 @@ export default function Customer() {
           <button className="bg-threeBg text-onAccOne px-4 py-3 rounded-3xl font-medium hover:bg-oneBg hover:text-Paragraph transition-colors duration-300 text-sm w-fit">مشاهده دمو</button>
         </section>
       </section>
-      </>
+      </Container>
     )}
