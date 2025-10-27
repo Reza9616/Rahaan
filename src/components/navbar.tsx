@@ -162,8 +162,8 @@ export default function NavigationMenuDemo() {
 					<DesktopMenu />
 
 					<div className="flex items-center gap-2">
-						<Button>دمو رایگان</Button>
-						<MoileNav />
+						
+						<MoileNav /><Button>دمو رایگان</Button>
 					</div>
 				</div>
 			</div>

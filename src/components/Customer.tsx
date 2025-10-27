@@ -41,9 +41,11 @@ export default function Customer() {
 
     return (
     <>
+
+
       <section className="p-4 sm:p-25">
         <section className="flex flex-col items-center space-y-10 sm:space-y-30 bg-accent sm:bg-transparent px-4 py-6">
-          <h3 className="text-3xl lg:text-5xl text-center text-primary">بشنو از کسایی که استفاده کردن!</h3>
+          <h3 className="text-3xl lg:text-5xl text-center text-primary">نظر مشتریان:</h3>
           <Container>
           <section className="sm:grid sm:grid-cols-[30%_10%_60%] sm:gap-2">
             <aside className="flex space-x-2 sm:flex-col sm:space-y-2 sm:border-l sm:pl-12">
@@ -82,17 +84,14 @@ export default function Customer() {
           </Container>
         </section>
       </section>
+
       <section>
-        <figure>
-          <Image 
-            className="max-h-screen w-full object-cover"
-            width={1920}
-            height={1}
-            src="/006.jpg" 
-            alt=""
-          />
-        </figure>
+        <section className="flex flex-col space-y-15 items-center py-40 px-6 sm:px-20 lg:px-30">
+          <strong className="text-center text-2xl sm:text-4xl font-medium text-Paragraph">مدیریت مالی آسون‌تر از همیشه! همین امروز شروع کن.</strong>
+          <button className="bg-threeBg text-onAccOne px-4 py-3 rounded-3xl font-medium hover:bg-oneBg hover:text-Paragraph transition-colors duration-300 text-sm w-fit">مشاهده دمو</button>
+        </section>
       </section>
+
     </>
     )
 }

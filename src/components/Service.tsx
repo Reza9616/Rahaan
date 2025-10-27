@@ -1,7 +1,8 @@
 import React, { useId } from 'react'
 import localFont from 'next/font/local';
-
+import Image from 'next/image';
 import { Container } from '@/components/ui/Container'
+import { Button } from './ui/button';
 
 const Badeen = localFont({
   src : [
@@ -262,7 +263,7 @@ export default function SecondaryFeatures() {
       <Container>
         <div className="mx-auto max-w-2xl sm:text-center space-y-4">
           <h2 className="text-3xl lg:text-5xl/snug text-gray-900">
-            ما حساب‌ها رو ساده می‌کنیم تا شما وقت بیشتری برای رشد داشته باشید.
+            ما حسابداری رو ساده می‌کنیم تا شما وقت بیشتری برای رشد داشته باشید.
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             از نرم‌افزارهای فروشگاهی تا ERP کامل شرکتی — هر ابزاری که برای مدیریت بهتر کارتون نیاز دارید اینجاست.
@@ -279,20 +280,39 @@ export default function SecondaryFeatures() {
             >
               {groupedFeatures[category].map((feature) =>
               (
-                <li
+                <button
                   key={feature.name}
-                  className='rounded-2xl border border-gray-200 p-8 flex flex-col space-y-6'
+                  className='relative rounded-2xl border border-gray-200 p-8 text-start flex flex-col space-y-6 group transition-all ease-in duration-200 hover:-translate-y-2 hover:shadow-xl h-fit cursor-pointer'
                 >
-                  <feature.icon className="h-8 w-8" />
+                  <feature.icon className="h-8 w-8 text-blue-600" />
                   <h4 className={`bg-accent tracking-tighter text-[17px] py-2 px-4 rounded-lg`}>
                     {feature.name}
                   </h4>
-                  <ul className='text-xs list-disc space-y-2'>
-                    <li className='text-gray-700'>{feature.descriptionOne}</li>
-                    <li className='text-gray-700'>{feature.descriptionTwo}</li>
-                    <li className='text-gray-700'>{feature.descriptionThree}</li>
+                  <ul className='text-xs list-disc space-y-2 group-hover:h-fit transition'>
+                    <li className='text-gray-700 line-clamp-2 leading-5'>{feature.descriptionOne}</li>
+                    <div className='overflow-hidden max-h-0 group-hover:max-h-40 hidden group-hover:block transition-all duration-200'>
+                      <div className='p-2 space-y-2'>
+                        <li className='text-gray-700 leading-5'>{feature.descriptionTwo}</li>
+                        <li className='text-gray-700 leading-5'>{feature.descriptionThree}</li>
+                      </div>
+                      <div className='pointer-events-none hidden group-hover:block absolute bg-linear-to-t from-secondary-foreground/15 opacity-0 group-hover:opacity-100 transition-opacity to-transparent inset-0 rounded-2xl duration-300'></div>
+                    </div>
                   </ul>
-                </li>
+                  
+                  
+
+                  <div className='hidden group-focus:flex justify-center items-center absolute inset-0 rounded-2xl backdrop-blur-xs'>
+                    {/* <Image
+                      className='-z-10 absolute'
+                      src={'/Rahaan.png'}
+                      width={200}
+                      height={100}
+                      alt=''
+                    >
+                    </Image> */}
+                    <Button variant={'link'}>اطلاعات بیشتر</Button>
+                  </div>
+                </button>
               ))}
             </ul>
           </div>
