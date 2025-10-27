@@ -9,7 +9,7 @@ export default function Hero() {
       <Container className="px-6 lg:px-10 py-25">
         <div className="grid sm:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
-            <h1 className="text-4xl lg:text-6xl lg:min-w-115 font-medium text-primary leading-tight">
+            <h1 className="text-4xl lg:text-6xl lg:min-w-115 text-primary leading-tight">
               <strong>رهان</strong>، <br /> حسابداری اما <WordRotateDemo />
             </h1>
             <p className="text-muted-foreground max-w-md text-sm">
