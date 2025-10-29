@@ -23,7 +23,7 @@ export default function Hero() {
                 width={850} 
                 height={600}
                 className=""
-                src="/head.png"
+                src="/header2.jpg"
                 alt=""
               />
             </figure>

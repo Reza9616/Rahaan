@@ -1,7 +1,7 @@
 "use client";
-import Image from "next/image";
-import { useState } from "react";
-import { Container } from "./ui/Container";
+// import Image from "next/image";
+// import { useState } from "react";
+// import { Container } from "./ui/Container";
 
 type UserCommentType = {
   jobTitle: string;
@@ -36,15 +36,15 @@ export const UserComment: UserCommentType[] = [
 ];
 
 export default function Customer() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const activeComment = UserComment[activeIndex];
+  // const [activeIndex, setActiveIndex] = useState(0);
+  // const activeComment = UserComment[activeIndex];
 
     return (
     <>
 
 
-      <section className="p-4 sm:p-25">
-        <section className="flex flex-col items-center space-y-10 sm:space-y-30 bg-accent sm:bg-transparent px-4 py-6">
+      {/* <section className="p-4 sm:p-25">
+        <section className="flex flex-col items-center space-y-10 sm:space-y-30 bg-accent sm:bg-transparent sm:px-4 py-6">
           <h3 className="text-3xl lg:text-5xl text-center text-primary">نظر مشتریان:</h3>
           <Container>
           <section className="sm:grid sm:grid-cols-[30%_10%_60%] sm:gap-2">
@@ -83,7 +83,7 @@ export default function Customer() {
           </section>
           </Container>
         </section>
-      </section>
+      </section> */}
 
       <section>
         <section className="flex flex-col space-y-15 items-center py-40 px-6 sm:px-20 lg:px-30">

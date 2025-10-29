@@ -163,7 +163,8 @@ export default function NavigationMenuDemo() {
 
 					<div className="flex items-center gap-2">
 						
-						<MoileNav /><Button>دمو رایگان</Button>
+						<Button className="text-xs sm:text-sm">دمو رایگان</Button>
+						<MoileNav />
 					</div>
 				</div>
 			</div>
@@ -260,7 +261,7 @@ function MoileNav() {
 				</Button>
 			</SheetTrigger>
 			<SheetContent
-				className="bg-background/95 supports-[backdrop-filter]:bg-background/80 w-full gap-0 backdrop-blur-lg"
+				className="bg-background/95 supports-backdrop-filter:bg-background/80 w-full gap-0 backdrop-blur-lg"
 				showClose={false}
 			>
 				<div className="flex h-14 items-center justify-end border-b px-4">

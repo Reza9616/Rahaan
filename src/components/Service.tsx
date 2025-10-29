@@ -288,7 +288,7 @@ export default function SecondaryFeatures() {
                   <h4 className={`bg-accent tracking-tighter text-[17px] py-2 px-4 rounded-lg`}>
                     {feature.name}
                   </h4>
-                  <ul className='text-xs list-disc space-y-2 group-hover:h-fit transition'>
+                  <ul className='text-xs list-disc space-y-2 group-hover:h-fit transition duration-1000'>
                     <li className='text-gray-700 line-clamp-2 leading-5'>{feature.descriptionOne}</li>
                     <div className='overflow-hidden max-h-0 group-hover:max-h-40 hidden group-hover:block transition-all duration-200'>
                       <div className='p-2 space-y-2'>
@@ -298,9 +298,6 @@ export default function SecondaryFeatures() {
                       <div className='pointer-events-none hidden group-hover:block absolute bg-linear-to-t from-secondary-foreground/15 opacity-0 group-hover:opacity-100 transition-opacity to-transparent inset-0 rounded-2xl duration-300'></div>
                     </div>
                   </ul>
-                  
-                  
-
                   <div className='hidden group-focus:flex justify-center items-center absolute inset-0 rounded-2xl backdrop-blur-xs'>
                     {/* <Image
                       className='-z-10 absolute'
