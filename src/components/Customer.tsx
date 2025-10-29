@@ -1,4 +1,7 @@
 "use client";
+
+import { Button } from "./ui/button";
+
 // import Image from "next/image";
 // import { useState } from "react";
 // import { Container } from "./ui/Container";
@@ -87,8 +90,8 @@ export default function Customer() {
 
       <section>
         <section className="flex flex-col space-y-15 items-center py-40 px-6 sm:px-20 lg:px-30">
-          <strong className="text-center text-2xl sm:text-4xl font-medium text-Paragraph">مدیریت مالی آسون‌تر از همیشه! همین امروز شروع کن.</strong>
-          <button className="bg-threeBg text-onAccOne px-4 py-3 rounded-3xl font-medium hover:bg-oneBg hover:text-Paragraph transition-colors duration-300 text-sm w-fit">مشاهده دمو</button>
+          <strong className="text-center text-2xl sm:text-4xl font-medium">مدیریت مالی آسون‌تر از همیشه! همین امروز شروع کن.</strong>
+          <Button>مشاهده دمو</Button>
         </section>
       </section>
 

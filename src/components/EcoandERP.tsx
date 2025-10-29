@@ -4,7 +4,7 @@ export default function EcoERP() {
         <>
         <div className="relative overflow-hidden py-24 sm:py-32">
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <p className="max-w-2xl text-3xl font-light tracking-tight text-pretty text-gray-900 sm:text-4xl">
+            <p className="max-w-2xl text-3xl font-light tracking-tight text-pretty sm:text-4xl">
                 <strong className="font-bold">رهان فروشگاهی</strong> 
                 <br /> 
                 کسب و کاری یکپارچه با رهان
@@ -27,7 +27,7 @@ export default function EcoERP() {
 
         <div className="relative overflow-hidden py-24 sm:py-32">
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <p className="max-w-2xl text-3xl font-light tracking-tight text-pretty text-gray-900 sm:text-4xl">
+            <p className="max-w-2xl text-3xl font-light tracking-tight text-pretty sm:text-4xl">
                 <strong className="font-bold">رهان صنعتی</strong> 
                 <br />
                 شرکتی یکپارچه با رهان
@@ -50,7 +50,7 @@ export default function EcoERP() {
 
         <div className="relative overflow-hidden py-24 sm:py-32">
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <p className="max-w-2xl text-3xl font-light tracking-tight text-pretty text-gray-900 sm:text-4xl">
+            <p className="max-w-2xl text-3xl font-light tracking-tight text-pretty  sm:text-4xl">
                 <strong className="font-bold">رهان ERP</strong> 
                 <br /> 
                 سازمانی یکپارچه با رهان
