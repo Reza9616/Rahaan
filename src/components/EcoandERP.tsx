@@ -19,7 +19,7 @@ export default function EcoERP() {
                             width={2432}
                             height={1442}
                             alt="رهان اکو"
-                            src="/storelaptop.png"
+                            src="/storelaptopp.png"
                             className=""
                         />
                 </div>
@@ -42,7 +42,7 @@ export default function EcoERP() {
                                 width={2432}
                                 height={1442}
                                 alt="رهان اکو"
-                                src="/ecolaptop.png"
+                                src="/ecolaptopp.png"
                                 className=""
                             />
                         </div>
