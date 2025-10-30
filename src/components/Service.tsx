@@ -265,13 +265,13 @@ export default function SecondaryFeatures() {
           <h2 className="text-3xl lg:text-5xl/snug text-primary">
             ما حسابداری رو ساده می‌کنیم تا شما وقت بیشتری برای رشد داشته باشید.
           </h2>
-          <p className="mt-2 text-sm text-secondary">
+          <p className="mt-2 text-sm text-secondary-foreground">
             از نرم‌افزارهای فروشگاهی تا ERP کامل شرکتی — هر ابزاری که برای مدیریت بهتر کارتون نیاز دارید اینجاست.
           </p>
         </div>
         {Object.keys(groupedFeatures).map((category) =>
           <div key={category} className='mt-10'>
-            <h3 className={`${Badeen.className} text-3xl m-4`}>
+            <h3 className={`font-bold text-3xl m-4`}>
               {category}
             </h3>
             <ul
