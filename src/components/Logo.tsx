@@ -9,13 +9,7 @@ export default function Logo(){
                 src="/Rahaan.png"
                 alt=""
             />
-            <Image 
-                width={45} 
-                height={35}
-                className="mt-0.5"
-                src="/LogoType.png"
-                alt=""
-            />
+            <span className="text-2xl font-bold">رهان</span>
         </div>
     )
 }

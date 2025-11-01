@@ -3,27 +3,16 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Facebook, Instagram, Linkedin, Moon, Send, Sun, Twitter, } from "lucide-react"
+import { Facebook, Instagram, Linkedin, Send, Twitter, } from "lucide-react"
+import Theme from "../Theme"
 
 function Footerdemo() {
-  const [isDarkMode, setIsDarkMode] = React.useState(false)
-  const [isChatOpen, setIsChatOpen] = React.useState(false)
-
-  React.useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-    }
-  }, [isDarkMode])
 
   return (
     <footer className="relative border-t bg-accent text-foreground transition-colors duration-300">
@@ -75,8 +64,8 @@ function Footerdemo() {
           <div>
             <h3 className="mb-4 text-lg font-semibold">ارتباط با ما</h3>
             <address className="space-y-2 text-sm not-italic">
-              <p></p>
-              <p>نیشابور، میدان ایران، کوچه میخک، ساختمان آفرینش</p>
+              <p>مشهد، بلوار مدرس، مدرس 8، کوچه زرمهر، ساختمان وکلا، واحد 103</p>
+              <p>نیشابور، میدان ایران، کوچه میخک، ساختمان آفرینش، طبقه سوم</p>
               <p>تلفن: 05142873242</p>
               <p>ایمیل: rahaan@gmail.com</p>
             </address>
@@ -137,18 +126,7 @@ function Footerdemo() {
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="flex items-center space-x-2">
-              <Sun className="h-4 w-4" />
-              <Switch
-                id="dark-mode"
-                checked={isDarkMode}
-                onCheckedChange={setIsDarkMode}
-              />
-              <Moon className="h-4 w-4" />
-              <Label htmlFor="dark-mode" className="sr-only">
-                Toggle dark mode
-              </Label>
-            </div>
+            <Theme />
           </div>
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 text-center md:flex-row">

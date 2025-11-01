@@ -2,9 +2,7 @@
 
 import { Button } from "./ui/button";
 
-// import Image from "next/image";
-// import { useState } from "react";
-// import { Container } from "./ui/Container";
+import Image from "next/image";
 
 type UserCommentType = {
   jobTitle: string;
@@ -39,62 +37,24 @@ export const UserComment: UserCommentType[] = [
 ];
 
 export default function Customer() {
-  // const [activeIndex, setActiveIndex] = useState(0);
-  // const activeComment = UserComment[activeIndex];
 
     return (
-    <>
-
-
-      {/* <section className="p-4 sm:p-25">
-        <section className="flex flex-col items-center space-y-10 sm:space-y-30 bg-accent sm:bg-transparent sm:px-4 py-6">
-          <h3 className="text-3xl lg:text-5xl text-center text-primary">نظر مشتریان:</h3>
-          <Container>
-          <section className="sm:grid sm:grid-cols-[30%_10%_60%] sm:gap-2">
-            <aside className="flex space-x-2 sm:flex-col sm:space-y-2 sm:border-l sm:pl-12">
-              {UserComment.map((Item, i) => (
-              <button 
-                key={i}
-                onClick={() => setActiveIndex(i)}
-                className={`p-4 text-xs flex flex-col space-y-2 sm:space-y-4 rounded-2xl transition-all duration-100 ${
-                  activeIndex === i 
-                  ? "bg-accent border border-border shadow-md"
-                  : "bg-white hover:bg-gray-50"
-                }`}>
-                <div className={`h-0.5 w-full  ${
-                  activeIndex === i ? "bg-primary" : "bg-primary/20"
-                  }`}></div>
-                <h5 className="text-Paragraph sm:text-lg text-right">{Item.jobTitle}</h5>
-                <p className="text-xs text-Paragraph/50 text-right">{Item.coName}</p>
-              </button>
-                ))}
-            </aside>
-            <section></section>
-            <section className="flex flex-col space-y-12">
-                <blockquote className="text-xl sm:text-4xl mt-10 text-primary">{activeComment.comment}</blockquote>
-                <div className="flex items-center justify-start gap-x-4 mt-6">
-                    <Image 
-                      className="h-12 object-cover rounded-2xl" 
-                      width={50} 
-                      src={`${activeComment.imgUrl}`}
-                      height={50}
-                      alt=""
-                    />
-                    <span className="ml-2 text-sm text-primary">{activeComment.name}</span>
-                </div>
-            </section>
-          </section>
-          </Container>
-        </section>
-      </section> */}
-
-      <section>
-        <section className="flex flex-col space-y-15 items-center py-40 px-6 sm:px-20 lg:px-30">
+    <div className="py-40 px-6 sm:px-20 lg:px-30">
+        <section className="flex flex-col space-y-15 items-center">
           <strong className="text-center text-2xl sm:text-4xl font-medium">مدیریت مالی آسون‌تر از همیشه! همین امروز شروع کن.</strong>
           <Button>مشاهده دمو</Button>
         </section>
-      </section>
 
-    </>
+        <section className="max-w-xl mx-auto">
+          <Image 
+            src={"/boxes.png"}
+            width={1400}
+            height={1400}
+            alt=""
+            className="drop-shadow-2xl grayscale-100 hover:grayscale-0 transition-all"
+          />
+        </section>
+
+    </div>
     )
 }

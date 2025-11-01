@@ -10,16 +10,15 @@ export default function EcoERP() {
                     کسب و کاری یکپارچه با رهان
                 </p>
                 <div className="mt-16 aspect-2432/1442 h-144 sm:h-auto">
-                    <div 
-                        className="absolute -z-10 h-120 -bottom-8 left-1/2 -translate-x-1/2 bg-gradient-to-t from-blue-100 to-accent opacity-70 w-[200vw]" 
+                    <div className="absolute -z-10 h-120 -bottom-8 left-1/2 -translate-x-1/2 bg-gradient-to-t from-blue-100 to-accent opacity-70 w-[200vw]" 
                         aria-hidden="true" 
                     />
                     
                         <Image
-                            width={2432}
-                            height={1442}
+                            width={1000}
+                            height={700}
                             alt="رهان اکو"
-                            src="/Storelaptopp.png"
+                            src="/store.png"
                             className=""
                         />
                 </div>
@@ -39,10 +38,10 @@ export default function EcoERP() {
                             aria-hidden="true" 
                         />
                             <Image
-                                width={2432}
-                                height={1442}
+                                width={1000}
+                                height={700}
                                 alt="رهان اکو"
-                                src="/ECOlaptopp.png"
+                                src="/eco.png"
                                 className=""
                             />
                         </div>
@@ -57,16 +56,15 @@ export default function EcoERP() {
                 سازمانی یکپارچه با رهان
             </p>
             <div className="mt-16 aspect-2432/1442 h-144 sm:h-auto">
-                <div 
-                    className="absolute -z-10 h-120 -bottom-8 left-1/2 -translate-x-1/2 bg-gradient-to-t from-blue-100 to-accent opacity-70 w-[200vw]" 
+                <div className="absolute -z-10 h-120 -bottom-8 left-1/2 -translate-x-1/2 bg-gradient-to-t from-blue-100 to-accent opacity-70 w-[200vw]" 
                     aria-hidden="true" 
                 />
                 
                 <Image
-                    width={2432}
-                    height={1442}
+                    width={1000}
+                    height={700}
                     alt="رهان ای آر پی"
-                    src="/ERPlaptopp.png"
+                    src="/erp.png"
                     className="shadow-b"
                 />
             </div>
