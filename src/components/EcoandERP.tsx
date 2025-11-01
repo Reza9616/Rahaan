@@ -41,7 +41,7 @@ export default function EcoERP() {
                                 width={1000}
                                 height={700}
                                 alt="رهان اکو"
-                                src="/Eco.png"
+                                src="/ECO.png"
                                 className=""
                             />
                         </div>

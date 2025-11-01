@@ -48,7 +48,7 @@ export const ProductDropCard = ({
   };
 
   return (
-    <Card className="w-full max-w-6xl mx-auto overflow-hidden bg-accent">
+    <Card className="w-full max-w-8xl mx-auto overflow-hidden bg-accent">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
