@@ -1,5 +1,7 @@
 'use client'
 import * as React from "react";
+
+import { motion, useMotionValue, useTransform, useSpring  } from "framer-motion";
 import {
   Card,
   CardContent,
@@ -47,6 +49,19 @@ export const ProductDropCard = ({
     }
   };
 
+  const x = useMotionValue(0)
+  const y = useMotionValue(0)
+
+  const xRange = [0, 600]
+  const yRange = [0, 600]
+
+  const translateX = useTransform(x, xRange, [20, -20])
+  const translateY = useTransform(y, yRange, [20, -20])
+
+  const springX = useSpring(translateX, { stiffness: 100, damping: 15 })
+  const springY = useSpring(translateY, { stiffness: 100, damping: 15 })
+
+
   return (
     <Card className="w-full max-w-7xl mx-auto overflow-hidden bg-accent">
       <CardHeader>
@@ -91,13 +106,29 @@ export const ProductDropCard = ({
             >
               <div className="flex flex-col justify-between h-full space-y-3">
                 <p className="text-sm text-muted-foreground"></p>
-                <div className="w-30 sm:w-full overflow-hidden rounded-md bg-muted">
-                  <img
+                <motion.div 
+                onPointerMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect()
+                  x.set(e.clientX - rect.left)
+                  y.set(e.clientY - rect.top) }}
+                  onPointerLeave={() => {
+                    x.set(200) // وسط تصویر
+                    y.set(200)
+                  }}
+                  whileHover={{ scale: 1.5 }}
+                  className="w-30 sm:w-full overflow-hidden rounded-md bg-muted hover:shadow-2xl">
+                  <motion.img
                     src={item.imageSrc}
                     alt={item.name}
                     className="h-full w-full object-contain object-cover"
+                    style={{
+                      scale: 1.5,
+                      x: springX,
+                      y: springY,
+                      transition: "transform 0.1s ease-out"
+                    }}
                   />
-                </div>
+                </motion.div>
                 <div className="flex flex-col lg:flex-row space-y-2 justify-between items-center mt-auto">
                 <div className="flex lg:block justify-between w-full">
                   <h3 className="font-semibold">{item.name}</h3>

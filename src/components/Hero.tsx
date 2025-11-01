@@ -1,4 +1,6 @@
+'use client'
 import Image from "next/image";
+import { motion } from "framer-motion";
 import WordRotateDemo from "./WordRotate";
 import { Button } from '@/components/ui/button';
 import { Container } from "./ui/Container";
@@ -18,7 +20,14 @@ export default function Hero() {
             <Button>مشاوره رایگان</Button>
           </div>
           <div className="flex justify-center lg:justify-end">
-            <figure className="relative">
+            <motion.figure 
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                duration: 2,
+                scale: { type: 'spring', visualDuration: 0.8, bounce: 0.5 },
+              }}
+              className="relative">
               <Image
                 width={850} 
                 height={600}
@@ -26,7 +35,7 @@ export default function Hero() {
                 src="/header2.jpg"
                 alt=""
               />
-            </figure>
+            </motion.figure>
           </div>
         </div>
       </Container>

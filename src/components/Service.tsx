@@ -1,20 +1,9 @@
-import React, { useId } from 'react'
-import localFont from 'next/font/local';
-import Image from 'next/image';
+'use client'
+import { AnimatePresence, motion } from "motion/react"
+import { useState } from "react";
 import { Container } from '@/components/ui/Container'
 import { Button } from './ui/button';
 import { MoveLeft } from 'lucide-react';
-
-const Badeen = localFont({
-  src : [
-    {
-      path: '../app/fonts/BadeenDisplay-Regular.ttf',
-      weight: '400',
-      style: 'normal'
-    }
-  ]
-})
-
 
 type featuresType = {
   id: number;
@@ -254,6 +243,7 @@ export default function SecondaryFeatures() {
   return acc
   }, {} as Record<string, featuresType[]>)
 
+  const [hovered, setHovered] = useState(false)
 
   return (
     <section
@@ -287,9 +277,13 @@ export default function SecondaryFeatures() {
             >
               {groupedFeatures[category].map((feature) =>
               (
-                <button
+                <motion.button
                   key={feature.name}
-                  className='relative rounded-2xl border border-blue-200 p-8 text-start flex flex-col space-y-6 group transition-all ease-in duration-200 hover:-translate-y-2 hover:shadow-xl h-fit cursor-pointer'
+                  whileHover={{ y: -8, boxShadow: "0 8px 20px rgba(0,0,0,0.1)" }}
+                  transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                  onHoverStart={() => setHovered(true)}
+                  onHoverEnd={() => setHovered(false)}
+                  className='relative rounded-2xl border border-blue-200 p-8 text-start flex flex-col space-y-6 group hover:shadow-xl h-fit cursor-pointer'
                 >
                   <feature.icon className="h-8 w-8 text-blue-400" />
                   <h4 className={`bg-accent tracking-tighter text-[17px] py-2 px-4 rounded-lg`}>
@@ -297,26 +291,37 @@ export default function SecondaryFeatures() {
                   </h4>
                   <ul className='text-xs list-disc space-y-2 group-hover:h-fit transition duration-1000'>
                     <li className='line-clamp-2 leading-5'>{feature.descriptionOne}</li>
-                    <div className='overflow-hidden max-h-0 group-hover:max-h-40 hidden group-hover:block transition-all duration-200'>
+                    <AnimatePresence>
+                      {hovered && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.4 }}
+                      className='overflow-hidden max-h-0 group-hover:max-h-40 hidden group-hover:block'>
                       <div className='p-2 space-y-2'>
                         <li className='leading-5'>{feature.descriptionTwo}</li>
                         <li className='leading-5'>{feature.descriptionThree}</li>
                       </div>
                       <div className='pointer-events-none hidden group-hover:block absolute bg-linear-to-t from-secondary-foreground/15 opacity-0 group-hover:opacity-100 transition-opacity to-transparent inset-0 rounded-2xl duration-300'></div>
-                    </div>
+                    </motion.div>
+                      )}
+                    </AnimatePresence>
                   </ul>
-                  <div className='hidden group-focus:flex justify-center items-center absolute inset-0 rounded-2xl backdrop-blur-xs'>
-                    {/* <Image
-                      className='-z-10 absolute'
-                      src={'/Rahaan.png'}
-                      width={200}
-                      height={100}
-                      alt=''
-                    >
-                    </Image> */}
-                    <Button variant={'link'}>اطلاعات بیشتر</Button>
-                  </div>
-                </button>
+                  <AnimatePresence>
+                    {hovered && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                        transition={{ type: "spring", stiffness: 150, damping: 18 }}
+                        className='hidden group-focus:flex justify-center items-center absolute inset-0 rounded-2xl backdrop-blur-xs'
+                      >
+                         <Button variant={'link'}>اطلاعات بیشتر</Button>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
               ))}
             </ul>
           </div>
