@@ -47,7 +47,7 @@ export default function Customer() {
 
         <section className="max-w-xl mx-auto">
           <Image 
-            src={"/boxes.png"}
+            src={"/Boxes.png"}
             width={1400}
             height={1400}
             alt=""
