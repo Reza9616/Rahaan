@@ -64,7 +64,7 @@ export default function EcoERP() {
                     width={1000}
                     height={700}
                     alt="رهان ای آر پی"
-                    src="/Erp.png"
+                    src="/ERP.png"
                     className="shadow-b"
                 />
             </div>
