@@ -2,7 +2,7 @@
 import { AnimatePresence, motion } from "motion/react"
 import { useState } from "react";
 import { Container } from '@/components/ui/Container'
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 import { MoveLeft } from 'lucide-react';
 
 type featuresType = {
@@ -69,15 +69,6 @@ const features: featuresType[] = [
     icon: WarehouseIcon,
     category: 'رهان ERP'
   },
-  // {
-  //   id: 2,
-  //   name: 'با رویکرد ERP',
-  //   descriptionOne: '',
-  //   descriptionTwo: '',
-  //   descriptionThree: '',
-  //   icon: DeviceClockIcon,
-  //   category: 'رهان اکو'
-  // },
   {
     id: 3,
     name: 'نرم افزار مدیریت طلافروشی',

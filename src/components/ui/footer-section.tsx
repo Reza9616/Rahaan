@@ -66,7 +66,7 @@ function Footerdemo() {
             <address className="space-y-2 text-sm not-italic">
               <p>مشهد، بلوار مدرس، مدرس 8، کوچه زرمهر، ساختمان وکلا، واحد 103</p>
               <p>نیشابور، میدان ایران، کوچه میخک، ساختمان آفرینش، طبقه سوم</p>
-              <p>تلفن: 05142873242</p>
+              <a href="tel:05142227051">تلفن: 05142227051</a>
               <p>ایمیل: rahaan@gmail.com</p>
             </address>
           </div>

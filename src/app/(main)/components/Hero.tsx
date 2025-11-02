@@ -1,9 +1,9 @@
 'use client'
 import Image from "next/image";
 import { motion } from "framer-motion";
-import WordRotateDemo from "./WordRotate";
+import WordRotateDemo from "@/components/WordRotate";
 import { Button } from '@/components/ui/button';
-import { Container } from "./ui/Container";
+import { Container } from "@/components/ui/Container";
 
 export default function Hero() {
   return (

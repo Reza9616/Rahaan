@@ -1,4 +1,3 @@
-import { Analytics } from "@vercel/analytics/next"
 import NavigationMenuDemo from "@/components/navbar"
 export default function MainLayout({
   children,
@@ -9,7 +8,6 @@ export default function MainLayout({
     <>
       <NavigationMenuDemo />
       {children}
-      <Analytics />
     </>
   );
 }

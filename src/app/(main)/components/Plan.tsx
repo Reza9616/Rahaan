@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { Container } from "./ui/Container";
-import { Button } from "./ui/button";
+import { Container } from "@/components/ui/Container";
+import { Button } from "@/components/ui/button";
 export default function Plan() {
     return (
     <Container>
