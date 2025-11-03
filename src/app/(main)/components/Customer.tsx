@@ -51,7 +51,7 @@ export default function Customer() {
             width={1400}
             height={1400}
             alt=""
-            className="drop-shadow-2xl grayscale-100 hover:grayscale-0 transition-all"
+            className="drop-shadow-2xl transition-all"
           />
         </section>
 
