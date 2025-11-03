@@ -1,7 +1,6 @@
-'use client'
-import * as React from "react";
+'use client';
 
-import { motion, useMotionValue, useTransform, useSpring  } from "framer-motion";
+import * as React from "react";
 import {
   Card,
   CardContent,
@@ -11,7 +10,6 @@ import {
 } from "./card";
 import { Button } from "./button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export interface DropItem {
   time: string;
@@ -32,38 +30,137 @@ export const ProductDropCard = ({
   items,
 }: ProductDropCardProps) => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  const itemsToShow = 3;
+  const [itemsToShow, setItemsToShow] = React.useState(3);
+  const sliderRef = React.useRef<HTMLDivElement>(null);
+  const isDragging = React.useRef(false);
+  const startPos = React.useRef(0);
+  const currentTranslate = React.useRef(0);
+  const prevTranslate = React.useRef(0);
+  const animationID = React.useRef<number | null>(null);
 
+  const isRTL = true;
+  // React.useMemo(() => {
+  //   return document.documentElement.dir === 'rtl' || 
+  //          getComputedStyle(document.documentElement).direction === 'rtl';
+  // }, []);
+
+  React.useEffect(() => {
+    const updateItemsToShow = () => {
+      const width = window.innerWidth;
+      if (width >= 1024) setItemsToShow(3);
+      else if (width >= 640) setItemsToShow(2);
+      else setItemsToShow(1);
+    };
+    updateItemsToShow();
+    window.addEventListener("resize", updateItemsToShow);
+    return () => window.removeEventListener("resize", updateItemsToShow);
+  }, []);
+
+  const maxIndex = Math.max(0, items.length - itemsToShow);
   const canGoPrev = currentIndex > 0;
-  const canGoNext = currentIndex < items.length - itemsToShow;
+  const canGoNext = currentIndex < maxIndex;
 
-  const handlePrev = () => {
-    if (canGoPrev) {
-      setCurrentIndex((prevIndex) => prevIndex - 1);
+  const goToSlide = (index: number) => {
+    const clampedIndex = Math.max(0, Math.min(index, maxIndex));
+    setCurrentIndex(clampedIndex);
+    
+    const translateValue = isRTL 
+      ? clampedIndex * 100 
+      : clampedIndex * -100;
+
+    currentTranslate.current = translateValue;
+    prevTranslate.current = translateValue;
+    setSliderPosition();
+  };
+
+  const handlePrev = () => goToSlide(currentIndex - 1);
+  const handleNext = () => goToSlide(currentIndex + 1);
+
+  const setSliderPosition = () => {
+    if (sliderRef.current) {
+      sliderRef.current.style.transform = `translateX(${currentTranslate.current}%)`;
     }
   };
 
-  const handleNext = () => {
-    if (canGoNext) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
+  const animation = () => {
+    setSliderPosition();
+    if (isDragging.current) {
+      animationID.current = requestAnimationFrame(animation);
     }
   };
 
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
+  const touchStart = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!sliderRef.current) return;
 
-  const xRange = [0, 600]
-  const yRange = [0, 600]
+    isDragging.current = true;
+    startPos.current = getPositionX(e);
+    prevTranslate.current = currentTranslate.current;
+    sliderRef.current.style.transition = 'none';
 
-  const translateX = useTransform(x, xRange, [20, -20])
-  const translateY = useTransform(y, yRange, [20, -20])
+    if ('cancelable' in e && e.cancelable) {
+      e.preventDefault();
+    }
 
-  const springX = useSpring(translateX, { stiffness: 100, damping: 15 })
-  const springY = useSpring(translateY, { stiffness: 100, damping: 15 })
+    animationID.current = requestAnimationFrame(animation);
+  };
 
+  const touchMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDragging.current || !sliderRef.current) return;
+
+    const currentPosition = getPositionX(e);
+    const diff = currentPosition - startPos.current;
+
+    const sliderWidth = sliderRef.current.offsetWidth;
+    const translateDiff = (diff / sliderWidth) * 100;
+
+    currentTranslate.current = prevTranslate.current + (isRTL ? translateDiff : -translateDiff);
+
+    if ('cancelable' in e && e.cancelable) {
+      e.preventDefault();
+    }
+  };
+
+  const touchEnd = () => {
+    if (!isDragging.current || !sliderRef.current) return;
+
+    cancelAnimationFrame(animationID.current!);
+    isDragging.current = false;
+    sliderRef.current.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)';
+
+    const movedBy = currentTranslate.current - prevTranslate.current;
+
+    const threshold = 20;
+
+    let shouldGoNext = false;
+    let shouldGoPrev = false;
+
+    if (isRTL) {
+      shouldGoNext = movedBy > threshold && currentIndex < maxIndex;
+      shouldGoPrev = movedBy < -threshold && currentIndex > 0;
+    } else {
+      shouldGoNext = movedBy < -threshold && currentIndex < maxIndex;
+      shouldGoPrev = movedBy > threshold && currentIndex > 0;
+    }
+
+    if (shouldGoNext) {
+      goToSlide(currentIndex + 1);
+    } else if (shouldGoPrev) {
+      goToSlide(currentIndex - 1);
+    } else {
+      goToSlide(currentIndex);
+    }
+  };
+
+  const getPositionX = (e: React.MouseEvent | React.TouchEvent): number => {
+    return 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+  };
+
+  React.useEffect(() => {
+    goToSlide(currentIndex);
+  }, [itemsToShow, isRTL]);
 
   return (
-    <Card className="w-full max-w-7xl mx-auto overflow-hidden bg-accent">
+    <Card className="w-full max-w-7xl mx-auto overflow-hidden bg-accent" dir="rtl">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -72,21 +169,20 @@ export const ProductDropCard = ({
           </div>
           <div className="flex items-center gap-2">
             <Button
-              variant='ghost'
+              variant="ghost"
               size="icon"
               onClick={handlePrev}
               disabled={!canGoPrev}
-              aria-label="Previous drop"
+              aria-label="دراپ قبلی"
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
             <Button
-              variant='ghost'
+              variant="ghost"
               size="icon"
               onClick={handleNext}
               disabled={!canGoNext}
-              aria-label="Next drop"
-              className=""
+              aria-label="دراپ بعدی"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -95,48 +191,43 @@ export const ProductDropCard = ({
       </CardHeader>
       <CardContent className="overflow-hidden">
         <div
-          className="flex gap-4 transition-transform duration-500 ease-in-out"
-          style={{ transform: `translateX(${currentIndex * (100 / itemsToShow)}%)` }}
+          ref={sliderRef}
+          className="flex gap-4 cursor-grab active:cursor-grabbing select-none"
+          style={{ touchAction: 'pan-y' }}
+          onMouseDown={touchStart}
+          onMouseMove={touchMove}
+          onMouseUp={touchEnd}
+          onMouseLeave={touchEnd}
+          onTouchStart={touchStart}
+          onTouchMove={touchMove}
+          onTouchEnd={touchEnd}
         >
           {items.map((item, index) => (
             <div
               key={index}
-              className="flex-shrink-0 w-full rounded-lg border bg-card p-4 text-card-foreground"
-              style={{ flexBasis: `calc((100% / ${itemsToShow}) - (${(itemsToShow - 1) * 16}px / ${itemsToShow}))` }}
+              className="flex-shrink-0 rounded-lg border bg-card p-4 text-card-foreground"
+              style={{
+                width: `${100 / itemsToShow}%`,
+                minWidth: `${100 / itemsToShow}%`,
+              }}
             >
               <div className="flex flex-col justify-between h-full space-y-3">
-                <p className="text-sm text-muted-foreground"></p>
-                <motion.div 
-                onPointerMove={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect()
-                  x.set(e.clientX - rect.left)
-                  y.set(e.clientY - rect.top) }}
-                  onPointerLeave={() => {
-                    x.set(200) // وسط تصویر
-                    y.set(200)
-                  }}
-                  whileHover={{ scale: 1.5 }}
-                  className="w-30 sm:w-full overflow-hidden rounded-md bg-muted hover:shadow-2xl">
-                  <motion.img
+                <p className="text-sm text-muted-foreground">{item.time}</p>
+                <div className="aspect-square overflow-hidden rounded-md bg-muted">
+                  <img
                     src={item.imageSrc}
                     alt={item.name}
-                    className="h-full w-full object-contain object-cover"
-                    style={{
-                      scale: 1.5,
-                      x: springX,
-                      y: springY,
-                      transition: "transform 0.1s ease-out"
-                    }}
+                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
                   />
-                </motion.div>
-                <div className="flex flex-col lg:flex-row space-y-2 justify-between items-center mt-auto">
-                <div className="flex lg:block justify-between w-full">
-                  <h3 className="font-semibold">{item.name}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {item.collection}
-                  </p>
                 </div>
-                <Button size={'sm'} variant={'outline'} className="w-full lg:w-fit">مشخصات</Button>
+                <div className="flex flex-col lg:flex-row justify-between items-center gap-2 mt-auto">
+                  <div className="text-center lg:text-right">
+                    <h3 className="font-semibold">{item.name}</h3>
+                    <p className="text-sm text-muted-foreground">{item.collection}</p>
+                  </div>
+                  <Button size="sm" variant="outline" className="w-full lg:w-fit">
+                    مشخصات
+                  </Button>
                 </div>
               </div>
             </div>

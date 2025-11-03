@@ -17,7 +17,7 @@ export default function Home() {
       <Plan />
       <EcoERP />
       <Customer />
-      <div className="fixed bottom-5 right-5">
+      <div className="fixed top-25 -right-5 rotate-90">
         <Theme />
       </div>
     </main>

@@ -3,7 +3,7 @@ import Image from "next/image"
 export default function EcoERP() {
   return (
     <>
-        <Container className="hidden relative before:-z-10 before:bg-[url(./layout.png)] before:bg-no-repeat before:absolute before:inset-0">
+        <Container className="hidden relative before:-z-10 before:bg-no-repeat before:absolute before:inset-0">
             <Container className="space-y-18">
                 <p className="max-w-2xl text-3xl font-light tracking-tight text-pretty sm:text-4xl">
                     <strong className="font-bold">رهان فروشگاهی</strong> 
@@ -27,7 +27,7 @@ export default function EcoERP() {
                     <br /> 
                     کسب و کاری یکپارچه با رهان
                 </p>
-                <div className="mt-16 sm:aspect-2432/1442 h-144 sm:h-auto">
+                <div className="mt-16 aspect-2432/1442 h-144 sm:h-auto">
                     <div className="absolute -z-10 h-120 -bottom-8 left-1/2 -translate-x-1/2 bg-gradient-to-t from-blue-100 to-accent opacity-70 w-[200vw]" 
                         aria-hidden="true" 
                     />

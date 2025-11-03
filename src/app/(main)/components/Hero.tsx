@@ -9,7 +9,7 @@ export default function Hero() {
   return (
     <div className="min-h-screen bg-accent relative overflow-hidden">
       <Container className="px-6 lg:px-10 py-25">
-        <div className="grid lg:grid-cols-[35%_65%] gap-x-12 items-center">
+        <div className="grid lg:grid-cols-[35%_65%] gap-x-12 items-center space-y-8">
           <div className="space-y-8">
             <h1 className="text-4xl lg:text-6xl font-light lg:min-w-115 text-primary/80 leading-tight">
               <strong className="font-semibold text-primary">رهان</strong>، <br /> حسابداری اما <WordRotateDemo />

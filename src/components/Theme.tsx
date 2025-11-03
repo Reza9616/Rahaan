@@ -23,7 +23,7 @@ export default function Theme()
          checked={isDarkMode}
          onCheckedChange={setIsDarkMode}
          />
-         <Moon className="h-4 w-4" />
+         <Moon className="h-4 w-4 rotate-180" />
          <Label htmlFor="dark-mode" className="sr-only">
          Toggle dark mode
          </Label>
