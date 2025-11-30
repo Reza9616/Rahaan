@@ -1,4 +1,3 @@
-import Image from "next/image";
 import React from 'react';
 import {
 	CodeIcon,
@@ -147,22 +146,11 @@ export const companyLinks: NavItemType[] = [
 export default function NavigationMenuDemo() {
 	return (
 		<div className="relative w-full px-6 py-4 lg:px-12 bg-accent">
-			{/* <div
-				aria-hidden="true"
-				className={cn(
-					'absolute inset-0 -z-10 size-full',
-					'bg-[radial-gradient(color-mix(in_oklab,--theme(--color-foreground/.2)30%,transparent)_2px,transparent_2px)]',
-					'bg-[size:12px_12px]',
-				)}
-			/> */}
-
 			<div className="bg-accent sticky top-1/4 z-50 mx-auto h-14 w-full max-w-7xl sm:px-4 rounded-lg">
 				<div className="flex h-full items-center justify-between">
 					<Logo />
 					<DesktopMenu />
-
 					<div className="flex items-center gap-2">
-						
 						<Button className="text-xs sm:text-sm">دمو رایگان</Button>
 						<MoileNav />
 					</div>

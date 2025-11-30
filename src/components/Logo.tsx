@@ -3,7 +3,6 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
-
 export default function Logo() {
     const text = "رهان";
     const [show, setShow] = useState(false);
@@ -21,6 +20,7 @@ export default function Logo() {
                 className=""
                 src="/Rahaan.png"
                 alt=""
+                priority
             />
         </motion.div>
         <motion.span 
@@ -28,8 +28,7 @@ export default function Logo() {
             onHoverEnd={() => setShow(false)}
             className="cursor-pointer text-2xl font-semibold"
         >
-            {show
-                ? [...text].map((letter, i) => (
+            {show ? [...text].map((letter, i) => (
                     <motion.span
                         key={i}
                         initial={{ opacity: 0 }}

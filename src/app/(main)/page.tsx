@@ -1,6 +1,5 @@
 import Hero from "@/app/(main)/components/Hero";
 import Service from "@/app/(main)/components/Service";
-import Customer from "@/app/(main)/components/Customer";
 import Plan from "@/app/(main)/components/Plan";
 import { Footer } from "@/components/Footer";
 import EcoERP from "@/app/(main)/components/EcoandERP";
@@ -10,13 +9,12 @@ import Theme from "@/components/Theme";
 export default function Home() {
   return (
   <>
-    <main>
+    <main className="">
       <Hero />
       <ProductDropCardDemo />
       <Service />
       <Plan />
       <EcoERP />
-      <Customer />
       <div className="fixed top-25 -right-5 rotate-90">
         <Theme />
       </div>

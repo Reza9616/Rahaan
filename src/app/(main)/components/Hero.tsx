@@ -27,13 +27,14 @@ export default function Hero() {
                 duration: 2,
                 scale: { type: 'spring', visualDuration: 0.8, bounce: 0.5 },
               }}
-              className="relative">
+              className="relative z-10">
               <Image
                 width={850} 
                 height={600}
                 className=""
                 src="/header2.jpg"
                 alt=""
+                priority
               />
             </motion.figure>
           </div>
