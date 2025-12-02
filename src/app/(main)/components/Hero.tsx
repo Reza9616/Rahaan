@@ -7,7 +7,7 @@ import { Container } from "@/components/ui/Container";
 
 export default function Hero() {
   return (
-    <div className="min-h-screen bg-accent relative overflow-hidden">
+    <div className="min-h-[85vh] bg-accent relative overflow-hidden">
       <Container className="px-6 lg:px-10 py-25">
         <div className="grid lg:grid-cols-[35%_65%] gap-x-12 items-center space-y-8">
           <div className="space-y-8">

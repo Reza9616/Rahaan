@@ -47,8 +47,9 @@ export const ProductDropCard = ({
   React.useEffect(() => {
     const updateItemsToShow = () => {
       const width = window.innerWidth;
-      if (width >= 1024) setItemsToShow(3);
-      else if (width >= 640) setItemsToShow(2);
+      if (width >= 1024) setItemsToShow(6);
+      if (width >= 640) setItemsToShow(5);
+      else if (width >= 540) setItemsToShow(3);
       else setItemsToShow(1);
     };
     updateItemsToShow();
@@ -160,7 +161,7 @@ export const ProductDropCard = ({
   }, [itemsToShow, isRTL]);
 
   return (
-    <Card className="w-full max-w-7xl mx-auto overflow-hidden bg-accent" dir="rtl">
+    <Card className="w-full mx-auto overflow-hidden bg-accent" dir="rtl">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
@@ -205,7 +206,7 @@ export const ProductDropCard = ({
           {items.map((item, index) => (
             <div
               key={index}
-              className="flex-shrink-0 rounded-lg border bg-card p-4 text-card-foreground"
+              className="shrink-0 rounded-lg border bg-card text-card-foreground transition-transform duration-300 hover:-translate-y-5"
               style={{
                 width: `${100 / itemsToShow}%`,
                 minWidth: `${100 / itemsToShow}%`,
@@ -213,21 +214,18 @@ export const ProductDropCard = ({
             >
               <div className="flex flex-col justify-between h-full space-y-3">
                 <p className="text-sm text-muted-foreground">{item.time}</p>
-                <div className="aspect-square overflow-hidden rounded-md bg-muted">
+                <div className="aspect-square overflow-hidden bg-muted">
                   <img
                     src={item.imageSrc}
                     alt={item.name}
-                    className="h-full w-full object-cover transition-transform duration-500 hover:scale-110"
+                    className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="flex flex-col lg:flex-row justify-between items-center gap-2 mt-auto">
-                  <div className="text-center lg:text-right">
+                <div className="flex flex-col xl:flex-row justify-between items-center gap-2 mt-auto">
+                  <div className="text-center lg:text-right p-3">
                     <h3 className="font-semibold">{item.name}</h3>
                     <p className="text-sm text-muted-foreground">{item.collection}</p>
                   </div>
-                  <Button size="sm" variant="outline" className="w-full lg:w-fit">
-                    مشخصات
-                  </Button>
                 </div>
               </div>
             </div>

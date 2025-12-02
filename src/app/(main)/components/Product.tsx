@@ -52,7 +52,7 @@ const upcomingDrops: DropItem[] = [
   },
   {
     time: "",
-    name: "سالن های زیبایی و آموزشگاه",
+    name: "سالن های زیبایی",
     collection: "رهان فروشگاهی",
     imageSrc: "/beauti-edu.jpg",
   },

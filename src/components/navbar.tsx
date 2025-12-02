@@ -146,12 +146,16 @@ export const companyLinks: NavItemType[] = [
 export default function NavigationMenuDemo() {
 	return (
 		<div className="relative w-full px-6 py-4 lg:px-12 bg-accent">
-			<div className="bg-accent sticky top-1/4 z-50 mx-auto h-14 w-full max-w-7xl sm:px-4 rounded-lg">
+			<div className="bg-transparent sticky top-1/4 z-50 mx-auto h-14 w-full sm:px-4 rounded-lg">
 				<div className="flex h-full items-center justify-between">
+					<div className='flex items-center gap-x-5'>
 					<Logo />
 					<DesktopMenu />
+					</div>
 					<div className="flex items-center gap-2">
 						<Button className="text-xs sm:text-sm">دمو رایگان</Button>
+						<Button variant={'secondary'} className="text-xs sm:text-sm">درخواست نمایندگی</Button>
+						<Button variant={'outline'} className="text-xs sm:text-sm">فعال ساز</Button>
 						<MoileNav />
 					</div>
 				</div>
