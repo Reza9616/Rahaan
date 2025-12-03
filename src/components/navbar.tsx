@@ -154,8 +154,8 @@ export default function NavigationMenuDemo() {
 					</div>
 					<div className="flex items-center gap-2">
 						<Button className="text-xs sm:text-sm">دمو رایگان</Button>
-						<Button variant={'secondary'} className="text-xs sm:text-sm">درخواست نمایندگی</Button>
-						<Button variant={'outline'} className="text-xs sm:text-sm">فعال ساز</Button>
+						<Button variant={'secondary'} className="text-xs sm:text-sm hidden lg:block">درخواست نمایندگی</Button>
+						<Button variant={'outline'} className="text-xs sm:text-sm hidden lg:block">فعال ساز</Button>
 						<MoileNav />
 					</div>
 				</div>
