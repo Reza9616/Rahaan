@@ -12,7 +12,9 @@ export default function Hero() {
         <div className="grid lg:grid-cols-[35%_65%] gap-x-12 items-center space-y-8">
           <div className="space-y-8">
             <h1 className="text-4xl lg:text-6xl font-light lg:min-w-115 text-primary/80 leading-tight">
-              <strong className="font-semibold text-primary">رهان</strong>، <br /> حسابداری اما <WordRotateDemo />
+              <strong className="font-semibold text-primary">
+                رهان
+                </strong>، <br /> حسابداری اما <WordRotateDemo />
             </h1>
             <p className="text-muted-foreground max-w-md text-sm">
               ساده و دقیق برای هر کسب‌وکار؛ از ERP سازمانی تا نرم‌افزارهای فروشگاهی؛ راه‌حل‌هایی که مدیریت مالی و تصمیمات روزانه‌ی شما را دقیق‌تر می‌کنند.

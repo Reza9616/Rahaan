@@ -161,14 +161,14 @@ export const ProductDropCard = ({
   }, [itemsToShow, isRTL]);
 
   return (
-    <Card className="w-full mx-auto overflow-hidden bg-accent" dir="rtl">
+    <Card className="w-full mx-auto overflow-hidden" dir="rtl">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-base sm:text-2xl">{title}</CardTitle>
             <CardDescription>{subtitle}</CardDescription>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="absolute left-10 flex items-center gap-2">
             <Button
               variant="ghost"
               size="icon"

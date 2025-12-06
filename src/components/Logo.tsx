@@ -8,22 +8,26 @@ export default function Logo() {
     const [show, setShow] = useState(false);
 
     return (
-        <div className="flex items-center gap-x-2">
+        <div className="flex items-center gap-x-1">
         <motion.div
             whileTap={{ scale: 0.6 }}
             animate={{ rotate: 360 }}
             transition={{ duration: 1 }}
-            className="flex items-center gap-2">
+            className="flex items-center gap-2 mt-1">
             <Image 
                 width={35} 
                 height={35}
                 className=""
-                src="/Rahaan.png"
+                src="/Logo/Rahaan.png"
                 alt=""
                 priority
             />
         </motion.div>
-        <motion.span 
+        <div>
+            <img src="logo/LogoTypeDark.png" className="h-8 dark:hidden" alt="" />
+            <img src="logo/LogoType III.png" className="h-8 hidden dark:block" alt="" />
+        </div>
+        {/* <motion.span 
             onHoverStart={() => setShow(true)}
             onHoverEnd={() => setShow(false)}
             className="cursor-pointer text-2xl font-semibold"
@@ -39,7 +43,7 @@ export default function Logo() {
                     </motion.span>
                 ))
             : text}
-        </motion.span>
+        </motion.span> */}
         </div>
     )
 }

@@ -75,7 +75,7 @@ const ProductDropCardDemo = () => {
   return (
     <div className="w-full bg-background p-8 flex items-center justify-center">
       <ProductDropCard
-        title="محصولات رهان"
+        title=""
         subtitle=""
         items={upcomingDrops}
       />

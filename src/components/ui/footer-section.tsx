@@ -1,5 +1,4 @@
 "use client"
-
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,7 +12,6 @@ import { Facebook, Instagram, Linkedin, Send, Twitter, } from "lucide-react"
 import Theme from "../Theme"
 
 function Footerdemo() {
-
   return (
     <footer className="relative border-t bg-accent text-foreground transition-colors duration-300">
       <div className="container mx-auto px-4 py-12 md:px-6 lg:px-8">
