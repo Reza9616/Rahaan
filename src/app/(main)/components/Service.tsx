@@ -346,7 +346,7 @@ export default function SecondaryFeatures() {
         <div className="flex flex-col sm:flex-row gap-x-12 sm:*:w-1/2 py-24">
           <div className="flex self-end">
             <Image
-              src={'/Erp.png'}
+              src={'/ERP.png'}
               width={1000}
               height={1}
               alt=""
@@ -373,7 +373,7 @@ export default function SecondaryFeatures() {
           </div>
           <div>
             <Image
-              src={'/EcoLaptopp.png'}
+              src={'/ECOLaptopp.png'}
               width={1000}
               height={1}
               alt=""
