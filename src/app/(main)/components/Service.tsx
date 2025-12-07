@@ -373,7 +373,7 @@ export default function SecondaryFeatures() {
           </div>
           <div>
             <Image
-              src={'/ECOLaptopp.png'}
+              src={'/ECOlaptopp.png'}
               width={1000}
               height={1}
               alt=""
