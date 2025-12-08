@@ -24,8 +24,8 @@ export default function Logo() {
             />
         </motion.div>
         <div>
-            <img src="logo/LogoTypeDark.png" className="h-8 dark:hidden" alt="" />
-            <img src="logo/LogoType III.png" className="h-8 hidden dark:block" alt="" />
+            <img src="Logo/LogoTypeDark.png" className="h-8 dark:hidden" alt="" />
+            <img src="Logo/LogoType III.png" className="h-8 hidden dark:block" alt="" />
         </div>
         {/* <motion.span 
             onHoverStart={() => setShow(true)}

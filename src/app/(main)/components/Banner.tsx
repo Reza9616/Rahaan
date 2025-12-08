@@ -13,7 +13,7 @@ export default function Banner() {
                 
             </div>
             
-            <div className="max-w-xs p-5 lg:max-w-sm space-y-4 my-auto text-background z-10">
+            <div className="max-w-xs p-5 lg:max-w-sm space-y-4 my-auto text-white z-10">
                 <h1 className="text-2xl font-bold lg:text-2xl md:text-xl sm:text-lg">
                     به مشاوره نیاز دارید؟
                 </h1>
