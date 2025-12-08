@@ -14,17 +14,17 @@ import { useState } from "react";
 
 const TickerOptions = [
   {
-    icon: <Phone className="h-6 w-6 text-blue-600 -rotate-90" />,
+    icon: <Phone className="h-6 w-6 text-background -rotate-90" />,
     tooltip: "تماس",
     href: (ticker: string) => `/${ticker}?activeTab=Chat`,
   },
   {
-    icon: <Grid className="h-6 w-6 text-blue-600" />,
+    icon: <Grid className="h-6 w-6 text-background" />,
     tooltip: "محصولات",
     href: (ticker: string) => `/${ticker}?activeTab=Persona`,
   },
   {
-    icon: <Monitor className="h-6 w-6 text-blue-600 -rotate-90" />,
+    icon: <Monitor className="h-6 w-6 text-background -rotate-90" />,
     tooltip: "دمو",
     href: (ticker: string) => `/${ticker}?activeTab=Competitors`,
   },
@@ -32,7 +32,7 @@ const TickerOptions = [
 
 export function QuickTickerOptions({ ticker }: { ticker: string }) {
   return (
-    <div className="flex gap-3 justify-center items-center text-foreground border bg-background rounded-xl px-3 py-2.5">
+    <div className="flex gap-3 justify-center items-center text-foreground border bg-primary rounded-xl px-3 py-2.5">
       {TickerOptions.map((option) => (
         <TickerOptionPil
           key={option.tooltip}
