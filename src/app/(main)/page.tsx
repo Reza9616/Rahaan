@@ -6,6 +6,7 @@ import ProductDropCardDemo from "@/app/(main)/components/Product";
 import { QuickTickerOptions } from "@/components/quick-tooltip-actions";
 import Banner from "./components/Banner";
 
+
 export default function Home() {
   return (
   <>
