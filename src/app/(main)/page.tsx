@@ -5,6 +5,8 @@ import { Footer } from "@/components/Footer";
 import ProductDropCardDemo from "@/app/(main)/components/Product";
 import { QuickTickerOptions } from "@/components/quick-tooltip-actions";
 import Banner from "./components/Banner";
+import Banner2 from "./components/Banner2";
+
 
 export default function Home() {
   return (
@@ -12,6 +14,7 @@ export default function Home() {
     <main>
       <Hero />
       <ProductDropCardDemo />
+      <Banner2 />
       <Service />
       <Banner />
       <Plan />

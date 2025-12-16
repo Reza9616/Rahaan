@@ -4,8 +4,7 @@ import { useState } from "react";
 import { Container } from '@/components/ui/Container'
 import { Button } from '@/components/ui/button';
 import { MoveLeft } from 'lucide-react';
-import Image from "next/image";
-
+import Image from "next/image"; 
 type featuresType = {
   id: number;
   name: string;
@@ -254,7 +253,7 @@ export default function SecondaryFeatures() {
         </div>
 
         {Object.keys(groupedFeatures).map((category) =>
-          <div key={category} className='mt-10 hidden'>
+          <div key={category} className='mt-5 hidden'>
             <div className='flex justify-between items-center group/title'>
             <h3 className={`font-bold text-3xl m-4`}>
               {category}
@@ -343,63 +342,93 @@ export default function SecondaryFeatures() {
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row gap-x-12 sm:*:w-1/2 py-24">
-          <div className="flex self-end">
-            <Image
-              src={'/ERP.png'}
-              width={1000}
-              height={1}
-              alt=""
-            />
-          </div>
-          <div className="flex flex-col space-y-8 justify-center h-79">
-            <div className="space-y-2">
-              <h4 className="font-semibold">رهان ERP</h4>
-              <p className="text-muted-foreground">برای شرکت‌ها و سازمان‌ها</p>
-            </div>
-            <p className="text-muted-foreground font-light">گزینه ایی هوشمندانه برای مدیرانی که میخواهند از مشکلات ساختاری دوری کنند و به سمت رشد و توسعه حرکت کنند. نسخه ایی متفاوت از مجموعه رهان که مبتنی بر رویکردهای ERP طراحی شده</p>
-            <Button variant={'outline'} className="w-fit px-6">مشاهده بیشتر</Button>
-          </div>
-        </div>
+<div className="max-w-7xl mx-auto px-6">
 
-        <div className="flex flex-col sm:flex-row gap-x-12 sm:*:w-1/2 py-24">
-          <div className="flex flex-col space-y-8 justify-center h-79">
-            <div className="space-y-2">
-              <h4 className="font-semibold">رهان صنعتی</h4>
-              <p className="text-muted-foreground">برای حسابداران و مدیران مالی</p>
-            </div>
-            <p className="text-muted-foreground font-light">گزینه ایی هوشمندانه برای مدیرانی که میخواهند از مشکلات ساختاری دوری کنند و به سمت رشد و توسعه حرکت کنند. نسخه ایی متفاوت از مجموعه رهان که مبتنی بر رویکردهای ERP طراحی شده</p>
-            <Button variant={'outline'} className="w-fit px-6">مشاهده بیشتر</Button>
-          </div>
-          <div>
-            <Image
-              src={'/ECOlaptopp.png'}
-              width={1000}
-              height={1}
-              alt=""
-            />
-          </div>
-        </div>
+  {/* رهان ERP */}
+  <div className="flex flex-col sm:flex-row gap-8 py-12 items-center">
+    {/* تصویر */}
+    <div className="sm:w-1/2 w-full flex justify-center">
+      <Image
+        src="/ERP.png"
+        width={600}
+        height={400}
+        alt="رهان ERP"
+        className="w-full h-auto rounded-lg shadow-lg object-cover"
+      />
+    </div>
 
-        <div className="flex flex-col sm:flex-row gap-x-12 sm:*:w-1/2 py-24">
-          <div className="">
-            <Image
-              src={'/store.png'}
-              width={1000}
-              height={1}
-              alt=""
-              className=""
-            />
-          </div>
-          <div className="flex flex-col space-y-8 justify-center h-79">
-            <div className="space-y-2">
-              <h4 className="font-semibold">رهان فروشگاهی</h4>
-              <p className="text-muted-foreground">برای فروشگاه‌ها و کسب‌وکارهای کوچک</p>
-            </div>
-            <p className="text-muted-foreground font-light">نرم افزاری راهبردی و کاربر پسند به همراه آموزش های متنوع و رایگان به علاوه پشتیبانی آنلاین 24 ساعته، مخصوص کسب و کارهای کوچک</p>
-            <Button variant={'outline'} className="w-fit px-6">مشاهده بیشتر</Button>
-          </div>
-        </div>
+    {/* توضیحات */}
+    <div className="sm:w-1/2 w-full flex flex-col space-y-6">
+      <div className="space-y-2">
+        <h4 className="font-semibold text-xl">رهان ERP</h4>
+        <p className="text-muted-foreground">برای شرکت‌ها و سازمان‌ها</p>
+      </div>
+      <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
+        نرم افزار های ERP رهان شامل یازده زیر سیستم مجزا و تخصصی از قبیل حسابداری، مدیریت وجه نقد، خرید، فروش، انبار، دارایی ثابت، تولید، بهای تمام شده، حقوق دستمزد، پرسنلی و تعمیرات و نگهداری می‌باشد که در کنار یکدیگر تمام فرآیندهای اداری سازمان و هلدینگ شما را به سادگی مدیریت خواهد کرد.
+      </p>
+      <Button asChild variant="outline" className="w-fit px-6">
+        <a href="/erp">مشاهده بیشتر</a>
+      </Button>
+    </div>
+  </div>
+
+  {/* رهان صنعتی */}
+  <div className="flex flex-col sm:flex-row gap-8 py-12 items-center">
+    {/* توضیحات */}
+    <div className="sm:w-1/2 w-full flex flex-col space-y-6 order-2 sm:order-1">
+      <div className="space-y-2">
+        <h4 className="font-semibold text-xl">رهان صنعتی</h4>
+        <p className="text-muted-foreground">برای حسابداران و مدیران مالی</p>
+      </div>
+      <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
+        گزینه‌ای هوشمندانه برای مدیرانی که می‌خواهند از چالش‌ها و مشکلات ساختاری فاصله بگیرند و با نگاهی آینده‌محور، مسیر رشد پایدار و توسعه سازمانی را انتخاب کنند. این راهکار با تمرکز بر بهینه‌سازی فرآیندها، افزایش بهره‌وری و ایجاد شفافیت در تصمیم‌گیری‌ها، به مدیران کمک می‌کند تا کنترل بهتری بر منابع و عملکرد سازمان خود داشته باشند.
+      </p>
+      <Button asChild variant="outline" className="w-fit px-6">
+        <a href="/Eco">مشاهده بیشتر</a>
+      </Button>
+    </div>
+
+    {/* تصویر */}
+    <div className="sm:w-1/2 w-full flex justify-center order-1 sm:order-2">
+      <Image
+        src="/ECOlaptopp.png"
+        width={600}
+        height={400}
+        alt="رهان صنعتی"
+        className="w-full h-auto rounded-lg shadow-lg object-cover"
+      />
+    </div>
+  </div>
+
+  {/* رهان فروشگاهی */}
+  <div className="flex flex-col sm:flex-row gap-8 py-12 items-center">
+    {/* تصویر */}
+    <div className="sm:w-1/2 w-full flex justify-center">
+      <Image
+        src="/store.png"
+        width={600}
+        height={400}
+        alt="رهان فروشگاهی"
+        className="w-full h-auto rounded-lg shadow-lg object-cover"
+      />
+    </div>
+
+    {/* توضیحات */}
+    <div className="sm:w-1/2 w-full flex flex-col space-y-6">
+      <div className="space-y-2">
+        <h4 className="font-semibold text-xl">رهان فروشگاهی</h4>
+        <p className="text-muted-foreground">برای فروشگاه‌ها و کسب‌وکارهای کوچک</p>
+      </div>
+      <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
+        رهان فروشگاهی، راهکاری ساده، هوشمند و مقرون‌به‌صرفه برای فروشگاه‌ها و کسب‌وکارهای کوچک است که به شما کمک می‌کند مدیریت فروش، موجودی کالا و مشتریان را به شکلی یکپارچه و بدون پیچیدگی انجام دهید. این نرم‌افزار با رابط کاربری روان و کاربرپسند طراحی شده تا حتی بدون دانش فنی خاص، به‌راحتی قابل استفاده باشد.
+      </p>
+      <Button asChild variant="outline" className="w-fit px-6">
+        <a href="/store">مشاهده بیشتر</a>
+      </Button>
+    </div>
+  </div>
+
+</div>
 
       </Container>
     </section>

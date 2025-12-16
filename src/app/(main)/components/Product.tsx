@@ -5,43 +5,37 @@ const upcomingDrops: DropItem[] = [
   {
     time: "",
     name: "رهان ERP",
-    collection: "سطح یک",
+    collection: "نرم افزار رهان ERP مخصوص سازمان ها و هلدینگ های تجاری",
     imageSrc: "/erp01.jpg",
   },
   {
     time: "",
-    name: "رهان ERP",
-    collection: "سطح دو",
+    name: "رهان Eco",
+    collection: "نرم افزار رهان ERP مخصوص سازمان ها و هلدینگ های تجاری",
     imageSrc: "/erp02.jpg",
+  }, 
+  {
+    time: "",
+    name: "صندوق فروشگاهی",
+    collection: "نرم افزار رهان صنعتی مخصوص کارخانجات و شرکت های بازرگانی",
+    imageSrc: "/safebox.jpg",
   },
   {
     time: "",
-    name: "رهان ERP",
-    collection: "سطح سه",
-    imageSrc: "/erp03.jpg",
+    name: "فیش پرینتر",
+    collection: "نرم افزار رهان صنعتی مخصوص کارخانجات و شرکت های بازرگانی",
+    imageSrc: "/fishprinter.png",
   },
   {
     time: "",
-    name: "رهان صنعتی",
-    collection: "سطح یک",
-    imageSrc: "/eco01.jpg",
-  },
-  {
-    time: "",
-    name: "رهان صنعتی",
-    collection: "سطح دو",
-    imageSrc: "/eco02.jpg",
-  },
-  {
-    time: "",
-    name: "رهان صنعتی",
-    collection: "سطح سه",
-    imageSrc: "/eco03.jpg",
+    name: "موس و کیبورد",
+    collection: "نرم افزار رهان صنعتی مخصوص کارخانجات و شرکت های بازرگانی",
+    imageSrc: "/mouse.jpg",
   },
   {
     time: "",
     name: "نسخه عمومی",
-    collection: "رهان فروشگاهی",
+    collection: "نرم افزار رهان صنعتی مخصوص کارخانجات و شرکت های بازرگانی",
     imageSrc: "/omoomi.jpg",
   },
   {
@@ -73,7 +67,7 @@ const upcomingDrops: DropItem[] = [
 
 const ProductDropCardDemo = () => {
   return (
-    <div className="w-full bg-background p-8 flex items-center justify-center">
+    <div className="w-full bg-background p-15 flex items-center justify-center">
       <ProductDropCard
         title=""
         subtitle=""

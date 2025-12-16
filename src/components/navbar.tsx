@@ -1,4 +1,4 @@
-import React from 'react';
+ 
 import {
 	CodeIcon,
 	GlobeIcon,
@@ -49,48 +49,38 @@ import { AnimatedTabs } from './ui/animated-tabs';
 
 export const productLinks: NavItemType[] = [
 	{
-		title: 'رهان ERP',
+		title: 'محصولات نرم افزاری ',
 		href: '',
-		description: 'پیشنهادی برای مدیران سازمان های تجاری و دولتی بزرگ',
+		description: 'مشاهده لیست محصولات نرم افزاری',
 		icon: GlobeIcon,
 	},
 	{
-		title: 'رهان اکو',
+		title: 'محصولات سخت افزاری',
 		href: '',
-		description: 'نسخه ایی متفاوت از مجموعه رهان که مبتنی بر رویکردهای ERP طراحی شده',
+		description: 'مشاهده لیست محصولات سخت افزاری',
 		icon: LayersIcon,
 	},
 	{
-		title: 'رهان استور',
+		title: 'مای رهان',
 		href: '',
-		description: 'نرم افزاری راهبردی و کاربر پسند به همراه آموزش های متنوع و رایگان',
+		description:  'بزودی',
 		icon: UserPlusIcon,
 	},
 	{
-		title: 'سامانه مودیان',
+		title: 'نرم افزار سازمانی رهان',
 		href: '',
 		icon: BarChart,
 	},
 	{
-		title: '',
+		title: 'نرم افزار صنعتی بازرگانی رهان',
 		href: '',
 		icon: PlugIcon,
 	},
 	{
-		title: '',
+		title:  'نرم افزار فروشگاهی رهان',
 		href: '',
 		icon: DollarSign,
-	},
-	{
-		title: '',
-		href: '',
-		icon: Shield,
-	},
-	{
-		title: '',
-		href: '',
-		icon: CodeIcon,
-	},
+	}, 
 ];
 
 export const companyLinks: NavItemType[] = [
@@ -105,25 +95,7 @@ export const companyLinks: NavItemType[] = [
 		href: '',
 		description: 'ببینید چگونه به مشتریان خود در موفقیت کمک کرده‌ایم',
 		icon: Star,
-	},
-	{
-		title: 'شرایط خدمات',
-		href: '',
-		description: 'نحوه عملکرد ما را درک کنید',
-		icon: FileText,
-	},
-	{
-		title: 'حفظ حریم خصوصی',
-		href: '',
-		description: 'چگونه از اطلاعات شما محافظت می‌کنیم',
-		icon: Shield,
-	},
-	{
-		title: 'سیاست بازپرداخت',
-		href: '',
-		description: 'جزئیات مربوط به بازپرداخت و لغو سفارش',
-		icon: RotateCcw,
-	},
+	},   
 	{
 		title: 'همکاری',
 		href: '',
@@ -135,13 +107,7 @@ export const companyLinks: NavItemType[] = [
 		href: '',
 		icon: Leaf,
 		description: 'بینش‌ها، آموزش‌ها و اخبار شرکت',
-	},
-	{
-		title: 'سوالات متداول',
-		href: '',
-		icon: HelpCircle,
-		description: 'پاسخ سوالات خود را بیابید',
-	},
+	}, 
 ];
 
 export default function NavigationMenuDemo() {
@@ -157,7 +123,7 @@ export default function NavigationMenuDemo() {
 						<Button className="text-xs sm:text-sm">دمو رایگان</Button>
 						<Button variant={'secondary'} className="text-xs sm:text-sm hidden lg:block">درخواست نمایندگی</Button>
 						<Button variant={'outline'} className="text-xs sm:text-sm hidden lg:block">فعال ساز</Button>
-						<MoileNav />
+						<MobileNav />
 					</div>
 				</div>
 			</div>
@@ -169,61 +135,29 @@ function DesktopMenu() {
 	return (
 		<NavigationMenu dir="rtl" className="hidden lg:block">
 			<NavigationMenuList>
+		  
 				<NavigationMenuItem>
-					<NavigationMenuTrigger>محصولات</NavigationMenuTrigger>
-					<NavigationMenuContent>
-						<div className="grid w-full md:w-4xl md:grid-cols-[1fr_.30fr]">
-							<ul className="grid grow gap-4 p-4 md:grid-cols-3 md:border-r">
-								{productLinks.slice(0, 3).map((link) => (
-									<li key={link.href}>
-										<NavGridCard link={link} />
-									</li>
-								))}
-							</ul>
-							<ul className="space-y-1 p-4">
-								{productLinks.slice(3).map((link) => (
-									<li key={link.href}>
-										<NavSmallItem
-											item={link}
-											href={link.href}
-											className="gap-x-1"
-										/>
-									</li>
-								))}
-							</ul>
-						</div>
-					</NavigationMenuContent>
+					<NavigationMenuLink className="cursor-pointer" href='/'>
+						صحفه اصلی
+					</NavigationMenuLink>
 				</NavigationMenuItem>
 				<NavigationMenuItem>
-					<NavigationMenuTrigger>شرکت</NavigationMenuTrigger>
-					<NavigationMenuContent>
-						<div className="grid w-full md:w-4xl md:grid-cols-[1fr_.40fr]">
-							<ul className="grid grow grid-cols-2 gap-4 p-4 md:border-r">
-								{companyLinks.slice(0, 2).map((link) => (
-									<li key={link.href}>
-										<NavGridCard link={link} className="min-h-36" />
-									</li>
-								))}
-								<div className="col-span-2 grid grid-cols-3 gap-x-4">
-									{companyLinks.slice(2, 5).map((link) => (
-										<li key={link.href}>
-											<NavLargeItem href={link.href} link={link} />
-										</li>
-									))}
-								</div>
-							</ul>
-							<ul className="space-y-2 p-4">
-								{companyLinks.slice(5, 10).map((link) => (
-									<li key={link.href}>
-										<NavLargeItem href={link.href} link={link} />
-									</li>
-								))}
-							</ul>
-						</div>
-					</NavigationMenuContent>
+					<NavigationMenuLink className="cursor-pointer" href='Software'>
+						محصولات نرم افزاری
+					</NavigationMenuLink>
 				</NavigationMenuItem>
 				<NavigationMenuItem>
-					<NavigationMenuLink className="cursor-pointer">
+					<NavigationMenuLink className="cursor-pointer" href='Products'>
+						محصولات سخت افزاری
+					</NavigationMenuLink>
+				</NavigationMenuItem>
+				<NavigationMenuItem>
+					<NavigationMenuLink className="cursor-pointer" href='about'>
+						درباره ما
+					</NavigationMenuLink>
+				</NavigationMenuItem>
+				<NavigationMenuItem>
+					<NavigationMenuLink className="cursor-pointer" href='Calculator'>
 						قیمت‌ها
 					</NavigationMenuLink>
 				</NavigationMenuItem>
@@ -231,63 +165,73 @@ function DesktopMenu() {
 		</NavigationMenu>
 	);
 }
+function MobileNav() {
+  const sections = [
+    {
+      title: "محصولات",
+      list: productLinks,
+    },
+    {
+      title: "رهان",
+      list: companyLinks,
+    },
+  ];
 
-function MoileNav() {
-	const sections = [
-		{
-			id: 'محصولات',
-			name: 'Product',
-			list: productLinks,
-		},
-		{
-			id: 'رهان',
-			name: 'Company',
-			list: companyLinks,
-		},
-	];
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="lg:hidden rounded-full"
+        >
+          <MenuIcon className="size-6" />
+        </Button>
+      </SheetTrigger>
 
-	return (
-		<Sheet>
-			<SheetTrigger asChild>
-				<Button size="icon" variant="ghost" className="rounded-full lg:hidden w-auto h-a4">
-					<MenuIcon className="size-6" />
-				</Button>
-			</SheetTrigger>
-			<SheetContent
-				className="bg-background/95 supports-backdrop-filter:bg-background/80 w-full gap-0 backdrop-blur-lg"
-				showClose={false}
-			>
-				<div className="flex h-14 items-center justify-end border-b px-4">
-					<SheetClose asChild>
-						<Button size="icon" variant="ghost" className="rounded-full">
-							<XIcon className="size-5" />
-							<span className="sr-only">Close</span>
-						</Button>
-					</SheetClose>
-				</div>
-				<div className="container grid gap-y-2 overflow-y-auto px-4 pt-5 pb-12">
-					<Accordion type="single" collapsible>
-						{sections.map((section) => (
-							<AccordionItem key={section.id} value={section.id}>
-								<AccordionTrigger className="capitalize hover:no-underline">
-									{section.id}
-								</AccordionTrigger>
-								<AccordionContent className="space-y-1">
-									<ul className="grid gap-1">
-										{section.list.map((link) => (
-											<li key={link.href}>
-												<SheetClose asChild>
-													<NavItemMobile item={link} href={link.href} />
-												</SheetClose>
-											</li>
-										))}
-									</ul>
-								</AccordionContent>
-							</AccordionItem>
-						))}
-					</Accordion>
-				</div>
-			</SheetContent>
-		</Sheet>
-	);
+      <SheetContent
+        side="right"
+        showClose={false}
+        className="w-full p-0 bg-background rtl"
+      >
+        {/* Header */}
+        <div className="sticky top-0 z-10 flex h-14 items-center justify-between border-b px-4 bg-background">
+          <span className="text-base font-bold">منو</span>
+          <SheetClose asChild>
+            <Button size="icon" variant="ghost" className="rounded-full">
+              <XIcon className="size-5" />
+            </Button>
+          </SheetClose>
+        </div>
+
+        {/* Content */}
+        <div className="overflow-y-auto px-4 py-6 space-y-8">
+          {sections.map((section) => (
+            <div key={section.title} className="space-y-3">
+              {/* Section title */}
+              <h3 className="text-sm font-semibold text-muted-foreground">
+                {section.title}
+              </h3>
+
+              {/* Links */}
+              <ul className="space-y-2">
+                {section.list.map((link) => (
+                  <li key={link.href}>
+                    <SheetClose asChild>
+                      <a
+                        href={link.href}
+                        className="flex items-center justify-start w-full rounded-2xl px-4 py-4 text-base font-medium transition active:scale-[0.98] hover:bg-muted"
+                      >
+                        {link.title}
+                      </a>
+                    </SheetClose>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
 }
