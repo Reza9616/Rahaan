@@ -45,6 +45,7 @@ import {
 	AccordionTrigger,
 } from '@/components/ui/accordion';
 import Logo from "./Logo";
+import { AnimatedTabs } from './ui/animated-tabs';
 
 export const productLinks: NavItemType[] = [
 	{
