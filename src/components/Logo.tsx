@@ -8,7 +8,8 @@ export default function Logo() {
     const [show, setShow] = useState(false);
 
     return (
-        <div className="flex items-center gap-x-1">
+        <div className="flex items-center gap-x-1 relative">
+            <a href="/" className=" absolute inset-0 z-1"/> 
         <motion.div
             whileTap={{ scale: 0.6 }}
             animate={{ rotate: 360 }}
@@ -23,8 +24,9 @@ export default function Logo() {
                 priority
             />
         </motion.div>
-        <div>
-            <img src="Logo/LogoTypeDark.png" className="h-8 dark:hidden" alt="" />
+        <div >
+            
+            <img src="Logo/LogoTypeDark.png" className="h-8 dark:hidden" alt=""/>
             <img src="Logo/LogoType III.png" className="h-8 hidden dark:block" alt="" />
         </div>
         {/* <motion.span 
