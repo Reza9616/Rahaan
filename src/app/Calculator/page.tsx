@@ -70,6 +70,7 @@ const packages: Package[] = [
 
 const initialFeatures: Feature[] = [
   { name: "تعداد کاربران", price: 5000000, count: 0 },
+  { name: "سامانه مودیان", price: 6000000, count: 0 }, 
   { name: "چند شرکت همزمان", price: 3000000, count: 0 },
   { name: "سامانه ویژه موبایل", price: 0, count: 0 }, 
   { name: "خدمات استقرار و آموزش", price: 1000000, count: 0 },
@@ -132,22 +133,56 @@ export default function Calculator() {
             </p>
           </section>
 
-          {/* Packages */}
-          <div className="flex flex-wrap justify-center gap-4">
-            {packages.map((pkg) => (
-              <button
-                key={pkg.name}
-                onClick={() => changePackage(pkg)}
-                className={`px-6 py-3 rounded-xl font-semibold transition ${
-                  selectedPackage.name === pkg.name
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200 hover:bg-gray-300"
-                }`}
-              >
-                {pkg.name}
-              </button>
-            ))}
-          </div>
+  <section className="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+  <div className="max-w-6xl mx-auto px-6 text-center">
+    {/* هدر با عکس و تایتل */}
+    <div className="mb-12">
+      {/* عکس هدر */}
+      <div className="relative mx-auto max-w-4xl mb-10 rounded-3xl overflow-hidden shadow-2xl">
+        <img 
+          src="/Boxes.png" // یا URL تصویر مناسب
+          alt="پکیج‌های نرم‌افزاری رهان - داشبوردهای هوشمند و یکپارچه"
+          className="w-full h-96 object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        {/* تایتل روی عکس (اختیاری - برای حس دراماتیک‌تر) */}
+        <div className="absolute bottom-8 left-0 right-0">
+          <h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
+            پکیج‌های هوشمند رهان
+          </h2>
+          <p className="text-xl text-white/90 mt-4 drop-shadow">
+            متناسب با اندازه و نیاز کسب‌وکار شما
+          </p>
+        </div>
+      </div>
+
+      {/* یا اگر نمی‌خواهید تایتل روی عکس باشد، اینجا بگذارید */}
+      {/* <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
+        انتخاب پکیج مناسب برای موفقیت شما
+      </h2>
+      <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+        از امکانات پایه تا ابزارهای پیشرفته سازمانی – همه در یک سیستم یکپارچه
+      </p> */}
+    </div>
+
+    {/* بخش انتخاب پکیج‌ها - کد قبلی شما */}
+    <div className="flex flex-wrap justify-center gap-4">
+      {packages.map((pkg) => (
+        <button
+          key={pkg.name}
+          onClick={() => changePackage(pkg)}
+          className={`px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-md hover:shadow-xl ${
+            selectedPackage.name === pkg.name
+              ? "bg-[#4f89c9] text-white scale-105"
+              : "bg-gray-200 hover:bg-gray-300 text-foreground"
+          }`}
+        >
+          {pkg.name}
+        </button>
+      ))}
+    </div>
+  </div>
+</section>
 
           {/* Modules */}
           <section className="bg-gray-50 p-6 rounded-2xl shadow space-y-4">

@@ -16,6 +16,7 @@ export interface DropItem {
   name: string;
   collection: string;
   imageSrc: string;
+  badge?: string;
 }
 
 export interface ProductDropCardProps {
@@ -31,25 +32,18 @@ export const ProductDropCard = ({
 }: ProductDropCardProps) => {
   const [currentIndex, setCurrentIndex] = React.useState(0);
   const [itemsToShow, setItemsToShow] = React.useState(3);
+  const [isHovered, setIsHovered] = React.useState(false);
+
   const sliderRef = React.useRef<HTMLDivElement>(null);
-  const isDragging = React.useRef(false);
-  const startPos = React.useRef(0);
-  const currentTranslate = React.useRef(0);
-  const prevTranslate = React.useRef(0);
-  const animationID = React.useRef<number | null>(null);
-
   const isRTL = true;
-  // React.useMemo(() => {
-  //   return document.documentElement.dir === 'rtl' || 
-  //          getComputedStyle(document.documentElement).direction === 'rtl';
-  // }, []);
 
+  /* ---------- Responsive ---------- */
   React.useEffect(() => {
     const updateItemsToShow = () => {
-      const width = window.innerWidth;
-      if (width >= 1024) setItemsToShow(6);
-      if (width >= 640) setItemsToShow(5);
-      else if (width >= 540) setItemsToShow(3);
+      const w = window.innerWidth;
+      if (w >= 1280) setItemsToShow(6);
+      else if (w >= 1024) setItemsToShow(5);
+      else if (w >= 640) setItemsToShow(3);
       else setItemsToShow(1);
     };
     updateItemsToShow();
@@ -58,180 +52,127 @@ export const ProductDropCard = ({
   }, []);
 
   const maxIndex = Math.max(0, items.length - itemsToShow);
-  const canGoPrev = currentIndex > 0;
-  const canGoNext = currentIndex < maxIndex;
+  const canPrev = currentIndex > 0;
+  const canNext = currentIndex < maxIndex;
 
+  /* ---------- Slider ---------- */
   const goToSlide = (index: number) => {
-    const clampedIndex = Math.max(0, Math.min(index, maxIndex));
-    setCurrentIndex(clampedIndex);
-    
-    const translateValue = isRTL 
-      ? clampedIndex * 100 
-      : clampedIndex * -100;
-
-    currentTranslate.current = translateValue;
-    prevTranslate.current = translateValue;
-    setSliderPosition();
-  };
-
-  const handlePrev = () => goToSlide(currentIndex - 1);
-  const handleNext = () => goToSlide(currentIndex + 1);
-
-  const setSliderPosition = () => {
+    if (items.length <= itemsToShow) return; // جلوگیری از حرکت وقتی آیتم کم است
+    const clamped = Math.max(0, Math.min(index, maxIndex));
+    setCurrentIndex(clamped);
     if (sliderRef.current) {
-      sliderRef.current.style.transform = `translateX(${currentTranslate.current}%)`;
+      sliderRef.current.style.transform = `translateX(${isRTL ? clamped * 100 : -clamped * 100}%)`;
     }
   };
 
-  const animation = () => {
-    setSliderPosition();
-    if (isDragging.current) {
-      animationID.current = requestAnimationFrame(animation);
-    }
-  };
-
-  const touchStart = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!sliderRef.current) return;
-
-    isDragging.current = true;
-    startPos.current = getPositionX(e);
-    prevTranslate.current = currentTranslate.current;
-    sliderRef.current.style.transition = 'none';
-
-    if ('cancelable' in e && e.cancelable) {
-      e.preventDefault();
-    }
-
-    animationID.current = requestAnimationFrame(animation);
-  };
-
-  const touchMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!isDragging.current || !sliderRef.current) return;
-
-    const currentPosition = getPositionX(e);
-    const diff = currentPosition - startPos.current;
-
-    const sliderWidth = sliderRef.current.offsetWidth;
-    const translateDiff = (diff / sliderWidth) * 100;
-
-    currentTranslate.current = prevTranslate.current + (isRTL ? translateDiff : -translateDiff);
-
-    if ('cancelable' in e && e.cancelable) {
-      e.preventDefault();
-    }
-  };
-
-  const touchEnd = () => {
-    if (!isDragging.current || !sliderRef.current) return;
-
-    cancelAnimationFrame(animationID.current!);
-    isDragging.current = false;
-    sliderRef.current.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)';
-
-    const movedBy = currentTranslate.current - prevTranslate.current;
-
-    const threshold = 20;
-
-    let shouldGoNext = false;
-    let shouldGoPrev = false;
-
-    if (isRTL) {
-      shouldGoNext = movedBy > threshold && currentIndex < maxIndex;
-      shouldGoPrev = movedBy < -threshold && currentIndex > 0;
-    } else {
-      shouldGoNext = movedBy < -threshold && currentIndex < maxIndex;
-      shouldGoPrev = movedBy > threshold && currentIndex > 0;
-    }
-
-    if (shouldGoNext) {
-      goToSlide(currentIndex + 1);
-    } else if (shouldGoPrev) {
-      goToSlide(currentIndex - 1);
-    } else {
-      goToSlide(currentIndex);
-    }
-  };
-
-  const getPositionX = (e: React.MouseEvent | React.TouchEvent): number => {
-    return 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
-  };
-
+  /* ---------- Auto play ---------- */
   React.useEffect(() => {
-    goToSlide(currentIndex);
-  }, [itemsToShow, isRTL]);
+    if (isHovered || items.length <= itemsToShow) return; // توقف اتوپلی اگر آیتم کم است
+    const t = setInterval(() => {
+      if (canNext) goToSlide(currentIndex + 1);
+      else goToSlide(0);
+    }, 4500);
+    return () => clearInterval(t);
+  }, [currentIndex, isHovered, itemsToShow]);
 
+  /* ---------- Render ---------- */
   return (
-    <Card className="w-full mx-auto overflow-hidden" dir="rtl">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-base sm:text-2xl">{title}</CardTitle>
-            <CardDescription>{subtitle}</CardDescription>
-          </div>
-          <div className="absolute left-10 flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handlePrev}
-              disabled={!canGoPrev}
-              aria-label="دراپ قبلی"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleNext}
-              disabled={!canGoNext}
-              aria-label="دراپ بعدی"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="overflow-hidden">
-        <div
-          ref={sliderRef}
-          className="flex gap-4 cursor-grab active:cursor-grabbing select-none"
-          style={{ touchAction: 'pan-y' }}
-          onMouseDown={touchStart}
-          onMouseMove={touchMove}
-          onMouseUp={touchEnd}
-          onMouseLeave={touchEnd}
-          onTouchStart={touchStart}
-          onTouchMove={touchMove}
-          onTouchEnd={touchEnd}
-        >
-          {items.map((item, index) => (
-            <div
-              key={index}
-              className="shrink-0 rounded-lg border bg-card text-card-foreground transition-transform duration-300 hover:-translate-y-5"
-              style={{
-                width: `${100 / itemsToShow}%`,
-                minWidth: `${100 / itemsToShow}%`,
-              }}
-            >
-              <div className="flex flex-col justify-between h-full space-y-3">
-                <p className="text-sm text-muted-foreground">{item.time}</p>
-                <div className="aspect-square overflow-hidden bg-muted">
-                  <img
-                    src={item.imageSrc}
-                    alt={item.name}
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-                <div className="flex flex-col xl:flex-row justify-between items-center gap-2 mt-auto">
-                  <div className="text-center lg:text-right p-3">
-                    <h3 className="font-semibold">{item.name}</h3>
-                    <p className="text-sm text-muted-foreground">{item.collection}</p>
-                  </div>
-                </div>
-              </div>
+<Card
+  className="relative w-full bg-gradient-to-br from-background to-muted/40 backdrop-blur-md shadow-xl border-none"
+  onMouseEnter={() => setIsHovered(true)}
+  onMouseLeave={() => setIsHovered(false)}
+>
+  <CardHeader className="text-center space-y-2">
+    <CardTitle className="text-xl sm:text-2xl font-bold">
+      {title}
+    </CardTitle>
+    <CardDescription>{subtitle}</CardDescription>
+  </CardHeader>
+
+  <CardContent className="relative overflow-hidden pb-12">
+    <div className="relative">
+      {/* Slider */}
+      <div
+        ref={sliderRef}
+        className={`flex gap-6 transition-transform duration-500 ease-out ${
+          items.length <= itemsToShow ? "justify-center" : ""
+        }`}
+      >
+        {items.map((item, i) => (
+          <div
+            key={i}
+            className="group shrink-0 rounded-2xl bg-background/80 backdrop-blur border shadow-md hover:shadow-xl transition-all duration-500"
+            style={{
+              width: `${100 / itemsToShow}%`,
+              minWidth: `${100 / itemsToShow}%`,
+            }}
+          >
+            <div className="relative aspect-square overflow-hidden rounded-t-2xl">
+              <img
+                src={item.imageSrc}
+                alt={item.name}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              {item.badge && (
+                <span className="absolute top-3 right-3 bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full shadow">
+                  {item.badge}
+                </span>
+              )}
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+
+            <div className="p-4 space-y-3">
+              <h3 className="font-semibold">{item.name}</h3>
+              <p className="text-sm text-muted-foreground">
+                {item.collection}
+              </p>
+              <Button className="w-full rounded-xl">
+                مشاهده جزئیات
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </CardContent>
+
+  {/* دکمه‌ها زیر اسلایدر */}
+<div className="mt-4 flex justify-center gap-2 z-20 relative">
+  {/* دکمه قبلی */}
+  <Button
+    onClick={() => goToSlide(currentIndex - 1)}
+    disabled={!canPrev}
+    className="
+      w-14 h-14
+      bg-primary/95 text-primary-foreground
+      rounded-lg
+      shadow-lg
+      flex items-center justify-center
+      hover:scale-110 transition
+      z-20
+    "
+  >
+    <ChevronLeft className="w-6 h-6" />
+  </Button>
+
+  {/* دکمه بعدی */}
+  <Button
+    onClick={() => goToSlide(currentIndex + 1)}
+    disabled={!canNext}
+    className="
+      w-14 h-14
+      bg-primary/95 text-primary-foreground
+      rounded-lg
+      shadow-lg
+      flex items-center justify-center
+      hover:scale-110 transition
+      z-20
+    "
+  >
+    <ChevronRight className="w-6 h-6" />
+  </Button>
+</div>
+</Card>
+
+    
   );
 };
