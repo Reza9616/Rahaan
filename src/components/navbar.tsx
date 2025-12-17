@@ -50,64 +50,37 @@ import { AnimatedTabs } from './ui/animated-tabs';
 export const productLinks: NavItemType[] = [
 	{
 		title: 'محصولات نرم افزاری ',
-		href: '',
+		href: 'Software',
 		description: 'مشاهده لیست محصولات نرم افزاری',
 		icon: GlobeIcon,
 	},
 	{
 		title: 'محصولات سخت افزاری',
-		href: '',
+		href: 'Products',
 		description: 'مشاهده لیست محصولات سخت افزاری',
 		icon: LayersIcon,
-	},
+	},  
 	{
-		title: 'مای رهان',
-		href: '',
-		description:  'بزودی',
-		icon: UserPlusIcon,
-	},
-	{
-		title: 'نرم افزار سازمانی رهان',
-		href: '',
-		icon: BarChart,
-	},
-	{
-		title: 'نرم افزار صنعتی بازرگانی رهان',
-		href: '',
-		icon: PlugIcon,
-	},
-	{
-		title:  'نرم افزار فروشگاهی رهان',
-		href: '',
-		icon: DollarSign,
-	}, 
+		title: 'استعلام قیمت',
+		href: 'Calculator',
+		description: 'مشاهده لیست محصولات سخت افزاری',
+		icon: LayersIcon,
+	},    
 ];
 
 export const companyLinks: NavItemType[] = [
 	{
 		title: 'درباره ی ما',
-		href: '',
+		href: 'about',
 		description: 'درباره داستان و تیم ما بیشتر بدانید',
 		icon: Users,
 	},
 	{
-		title: 'داستان مشتریان',
+		title: 'مقالات',
 		href: '',
-		description: 'ببینید چگونه به مشتریان خود در موفقیت کمک کرده‌ایم',
-		icon: Star,
-	},   
-	{
-		title: 'همکاری',
-		href: '',
-		icon: Handshake,
-		description: 'برای رشد و توسعه مشترک با ما همکاری کنید',
-	},
-	{
-		title: 'وبلاگ',
-		href: '',
-		icon: Leaf,
-		description: 'بینش‌ها، آموزش‌ها و اخبار شرکت',
-	}, 
+		description: 'درباره مقالات ما بیشتر بدانید',
+		icon: Users,
+	},    
 ];
 
 export default function NavigationMenuDemo() {
@@ -120,8 +93,7 @@ export default function NavigationMenuDemo() {
 					<DesktopMenu />
 					</div>
 					<div className="flex items-center gap-2">
-						<Button className="text-xs sm:text-sm">دمو رایگان</Button>
-						<Button variant={'secondary'} className="text-xs sm:text-sm hidden lg:block">درخواست نمایندگی</Button>
+						<Button className="text-xs sm:text-sm">دمو رایگان</Button> 
 						<Button variant={'outline'} className="text-xs sm:text-sm hidden lg:block">فعال ساز</Button>
 						<MobileNav />
 					</div>
@@ -154,6 +126,11 @@ function DesktopMenu() {
 				<NavigationMenuItem>
 					<NavigationMenuLink className="cursor-pointer" href='about'>
 						درباره ما
+					</NavigationMenuLink>
+				</NavigationMenuItem>
+				<NavigationMenuItem>
+					<NavigationMenuLink className="cursor-pointer" href='/'>
+						مقالات
 					</NavigationMenuLink>
 				</NavigationMenuItem>
 				<NavigationMenuItem>

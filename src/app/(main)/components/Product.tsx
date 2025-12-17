@@ -13,7 +13,7 @@ const upcomingDrops: DropItem[] = [
     name: "رهان Eco",
     collection: "نرم افزار رهان ERP مخصوص سازمان ها و هلدینگ های تجاری",
     imageSrc: "/erp02.jpg",
-  }, 
+  },
   {
     time: "",
     name: "صندوق فروشگاهی",
@@ -56,22 +56,37 @@ const upcomingDrops: DropItem[] = [
     collection: "رهان فروشگاهی",
     imageSrc: "/cafe.jpg",
   },
-    {
+  {
     time: "",
     name: "هایپر مارکت و داروخانه",
     collection: "رهان فروشگاهی",
     imageSrc: "/hyper.jpg",
   },
-
 ];
 
+/* 🔁 تکرار آیتم‌ها برای Infinite Loop */
+const repeatItems = (items: DropItem[], minLength = 18) => {
+  if (items.length >= minLength) return items;
+
+  const repeated: DropItem[] = [];
+  while (repeated.length < minLength) {
+    repeated.push(...items);
+  }
+  return repeated;
+};
+
 const ProductDropCardDemo = () => {
+  const infiniteItems = React.useMemo(
+    () => repeatItems(upcomingDrops),
+    []
+  );
+
   return (
-    <div className="w-full bg-background p-15 flex items-center justify-center">
+    <div className="w-full bg-background py-20 flex items-center justify-center">
       <ProductDropCard
         title=""
         subtitle=""
-        items={upcomingDrops}
+        items={infiniteItems}
       />
     </div>
   );

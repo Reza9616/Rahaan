@@ -13,7 +13,7 @@ export default function Home() {
   <>
     <main>
       <Hero />
-      <ProductDropCardDemo />
+      {/* <ProductDropCardDemo /> اسلایدر*/} 
       <Banner2 />
       <Service />
       <Banner />
