@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Footer } from "@/components/Footer";
 import NavigationMenuDemo from "@/components/navbar";
+import jsPDF from "jspdf";
 
 /* -------------------- Types -------------------- */
 interface Module {
@@ -10,9 +11,15 @@ interface Module {
   price: number;
 }
 
+interface PackageLevel {
+  name: string;
+  modules: string[];
+}
+
 interface Package {
   name: string;
   modules: Module[];
+  levels?: PackageLevel[];
 }
 
 interface Feature {
@@ -39,6 +46,11 @@ const packages: Package[] = [
       { name: "تعمیرات و نگهداری", price: 15000000 },
       { name: "بهای تمام شده", price: 55000000 },
     ],
+    levels: [
+      { name: "سطح سه", modules: ["حسابداری", "خزانه", "خرید", "فروش", "انبار"] },
+      { name: "سطح دو", modules: ["حسابداری", "خزانه", "خرید", "فروش", "انبار","حقوق و دستمزد","پرسنلی","دارایی ثابت"] },
+      { name: "سطح یک", modules: ["حسابداری", "خزانه", "خرید", "فروش", "انبار", "حقوق و دستمزد","پرسنلی", "تولید","بهای تمام شده","تعمیرات و نگهداری","باسکول" ,"دارایی ثابت"] },
+    ],
   },
   {
     name: "رهان صنعتی و بازرگانی",
@@ -52,8 +64,13 @@ const packages: Package[] = [
       { name: "حقوق و دستمزد", price: 25000000 },
       { name: "تولید", price: 45000000 },
       { name: "باسکول", price: 8000000 },
-      { name: "دارایی ثابت", price: 25000000 }, 
+      { name: "دارایی ثابت", price: 25000000 },
       { name: "بهای تمام شده", price: 55000000 },
+    ],
+    levels: [
+      { name: "سطح سه", modules: ["حسابداری", "خزانه", "خرید", "فروش", "انبار"] },
+      { name: "سطح دو", modules: ["حسابداری", "خزانه", "خرید", "فروش", "انبار","حقوق و دستمزد","پرسنلی","دارایی ثابت"] },
+      { name: "سطح یک", modules: ["حسابداری", "خزانه", "خرید", "فروش", "انبار", "حقوق و دستمزد","پرسنلی", "تولید","بهای تمام شده","تعمیرات و نگهداری","باسکول" ,"دارایی ثابت"] },
     ],
   },
   {
@@ -70,236 +87,195 @@ const packages: Package[] = [
 
 const initialFeatures: Feature[] = [
   { name: "تعداد کاربران", price: 5000000, count: 0 },
-  { name: "سامانه مودیان", price: 6000000, count: 0 }, 
+  { name: "سامانه مودیان", price: 6000000, count: 0 },
   { name: "چند شرکت همزمان", price: 3000000, count: 0 },
-  { name: "سامانه ویژه موبایل", price: 0, count: 0 }, 
+  { name: "سامانه موبایل", price: 0, count: 0 },
   { name: "خدمات استقرار و آموزش", price: 1000000, count: 0 },
 ];
 
 /* -------------------- Component -------------------- */
-export default function Calculator() {
+export default function CalculatorPage() {
   const [selectedPackage, setSelectedPackage] = useState<Package>(packages[0]);
+  const [selectedLevel, setSelectedLevel] = useState<PackageLevel | null>(
+    packages[0].levels ? packages[0].levels[0] : null
+  );
   const [selectedModules, setSelectedModules] = useState<string[]>([]);
   const [features, setFeatures] = useState<Feature[]>(initialFeatures);
 
-  /* -------------------- Logic -------------------- */
-  const toggleModule = (name: string) => {
-    setSelectedModules((prev) =>
-      prev.includes(name)
-        ? prev.filter((m) => m !== name)
-        : [...prev, name]
-    );
-  };
+  const [today, setToday] = useState("");
+  useEffect(() => setToday(new Date().toLocaleDateString()), []);
 
-  const changeFeature = (index: number, delta: number) => {
-    setFeatures((prev) =>
-      prev.map((f, i) =>
-        i === index ? { ...f, count: Math.max(0, f.count + delta) } : f
-      )
-    );
-  };
+  useEffect(() => {
+    if (selectedLevel) setSelectedModules(selectedLevel.modules);
+    else setSelectedModules([]);
+  }, [selectedLevel, selectedPackage]);
 
-  const changePackage = (pkg: Package) => {
-    setSelectedPackage(pkg);
-    setSelectedModules([]);
-  };
+  const toggleModule = (name: string) =>
+    setSelectedModules(prev => prev.includes(name) ? prev.filter(m => m !== name) : [...prev, name]);
 
-  const modulesPrice = selectedPackage.modules
-    .filter((m) => selectedModules.includes(m.name))
-    .reduce((sum, m) => sum + m.price, 0);
+  const changeFeature = (index: number, delta: number) =>
+    setFeatures(prev => prev.map((f, i) => i === index ? { ...f, count: Math.max(0, f.count + delta) } : f));
 
-  const featuresPrice = features.reduce(
-    (sum, f) => sum + f.price * f.count,
-    0
-  );
-
+  const modulesPrice = selectedPackage.modules.filter(m => selectedModules.includes(m.name)).reduce((sum, m) => sum + m.price, 0);
+  const featuresPrice = features.reduce((sum, f) => sum + f.price * f.count, 0);
   const totalPrice = modulesPrice + featuresPrice;
 
-  /* -------------------- UI -------------------- */
+  /* -------------------- PDF ساده بدون فونت فارسی -------------------- */
+  const generatePDF = () => {
+    const doc = new jsPDF({ format: "a4", unit: "pt" });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let y = 40;
+
+    doc.setFontSize(20);
+    doc.text("پیش‌فاکتور نرم‌افزار رهان", pageWidth - 40, y, { align: "right" });
+
+    y += 30;
+    doc.setFontSize(12);
+    doc.text(`تاریخ: ${today}`, pageWidth - 40, y, { align: "right" });
+
+    y += 20;
+    doc.text(`بسته انتخابی: ${selectedPackage.name}`, pageWidth - 40, y, { align: "right" });
+
+    if (selectedLevel) {
+      y += 20;
+      doc.text(`سطح: ${selectedLevel.name}`, pageWidth - 40, y, { align: "right" });
+    }
+
+    y += 30;
+    doc.setFontSize(14);
+    doc.text("ماژول‌ها:", pageWidth - 40, y, { align: "right" });
+    y += 20;
+    selectedModules.forEach(m => {
+      const mod = selectedPackage.modules.find(mod => mod.name === m);
+      doc.text(`${m} - ${mod?.price.toLocaleString()} تومان`, pageWidth - 50, y, { align: "right" });
+      y += 20;
+    });
+
+    y += 20;
+    doc.text("امکانات جانبی:", pageWidth - 40, y, { align: "right" });
+    y += 20;
+    features.filter(f => f.count > 0).forEach(f => {
+      doc.text(`${f.name} ×${f.count} - ${(f.price*f.count).toLocaleString()} تومان`, pageWidth - 50, y, { align: "right" });
+      y += 20;
+    });
+
+    y += 20;
+    doc.setFontSize(16);
+    doc.text(`جمع کل: ${totalPrice.toLocaleString()} تومان`, pageWidth - 40, y, { align: "right" });
+
+    doc.save("invoice.pdf");
+  };
+
   return (
     <>
       <NavigationMenuDemo />
 
-      <main className="px-6 md:px-12 flex flex-col md:flex-row gap-8">
-        {/* -------- Main -------- */}
-        <div className="flex-1 space-y-12">
-          {/* Header */}
-          <section className="text-center py-10">
-            <h1 className="text-4xl font-bold mb-3">
-              ماشین حساب بسته‌های نرم‌افزاری رهان
-            </h1>
-            <p className="text-gray-600">
-              ابتدا بسته را انتخاب کنید، سپس ماژول‌ها و امکانات جانبی را مشخص نمایید
-            </p>
-          </section>
-
-  <section className="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-  <div className="max-w-6xl mx-auto px-6 text-center">
-    {/* هدر با عکس و تایتل */}
-    <div className="mb-12">
-      {/* عکس هدر */}
-      <div className="relative mx-auto max-w-4xl mb-10 rounded-3xl overflow-hidden shadow-2xl">
-        <img 
-          src="/Boxes.png" // یا URL تصویر مناسب
-          alt="پکیج‌های نرم‌افزاری رهان - داشبوردهای هوشمند و یکپارچه"
-          className="w-full h-96 object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-        {/* تایتل روی عکس (اختیاری - برای حس دراماتیک‌تر) */}
-        <div className="absolute bottom-8 left-0 right-0">
-          <h2 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
-            پکیج‌های هوشمند رهان
-          </h2>
-          <p className="text-xl text-white/90 mt-4 drop-shadow">
-            متناسب با اندازه و نیاز کسب‌وکار شما
+      {/* Header */}
+      <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
+        <img src="/Boxes.png" alt="Pricing Calculator" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="relative z-10 text-center text-white px-6">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">محاسبه قیمت نرم‌افزار رهان</h1>
+          <p className="max-w-2xl mx-auto text-lg text-white/90">
+            بسته و سطح مورد نظر را انتخاب کنید و هزینه نهایی را مشاهده کنید
           </p>
         </div>
-      </div>
 
-      {/* یا اگر نمی‌خواهید تایتل روی عکس باشد، اینجا بگذارید */}
-      {/* <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-        انتخاب پکیج مناسب برای موفقیت شما
-      </h2>
-      <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-        از امکانات پایه تا ابزارهای پیشرفته سازمانی – همه در یک سیستم یکپارچه
-      </p> */}
-    </div>
+        {/* موبایل جمع کل */}
+        <aside className="absolute bottom-0 left-0 w-full bg-background/90 border-t p-4 flex justify-between items-center md:hidden">
+          <div>
+            <div className="text-xs text-muted-foreground">جمع کل</div>
+            <div className="font-bold">{totalPrice.toLocaleString()} تومان</div>
+          </div>
+          <button disabled={totalPrice===0} className={`px-5 py-2 rounded-xl font-medium ${totalPrice===0 ? "bg-muted text-muted-foreground" : "bg-primary text-white"}`}>
+            ادامه
+          </button>
+        </aside>
+      </section>
 
-    {/* بخش انتخاب پکیج‌ها - کد قبلی شما */}
-    <div className="flex flex-wrap justify-center gap-4">
-      {packages.map((pkg) => (
-        <button
-          key={pkg.name}
-          onClick={() => changePackage(pkg)}
-          className={`px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-md hover:shadow-xl ${
-            selectedPackage.name === pkg.name
-              ? "bg-[#4f89c9] text-white scale-105"
-              : "bg-gray-200 hover:bg-gray-300 text-foreground"
-          }`}
-        >
-          {pkg.name}
-        </button>
-      ))}
-    </div>
-  </div>
-</section>
-
-          {/* Modules */}
-          <section className="bg-gray-50 p-6 rounded-2xl shadow space-y-4">
-            <div className="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-xl text-sm">
-              👈 برای محاسبه قیمت، ماژول‌های مورد نیاز خود را انتخاب کنید
+      {/* Main Content */}
+      <main className="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-[1fr_320px] gap-10">
+        <div className="space-y-14">
+          {/* Packages */}
+          <section className="text-center space-y-4">
+            <h2 className="text-2xl font-bold">انتخاب بسته</h2>
+            <div className="flex flex-wrap justify-center gap-6">
+              {packages.map(pkg => (
+                <div key={pkg.name} onClick={() => setSelectedPackage(pkg)}
+                  className={`cursor-pointer w-52 p-5 rounded-2xl border transition-all text-center ${selectedPackage.name===pkg.name ? "bg-primary text-white shadow-lg scale-105" : "bg-background hover:shadow-md hover:scale-105"}`}>
+                  <h3 className="font-bold text-lg mb-2">{pkg.name}</h3>
+                  {pkg.levels ? <p className="text-sm text-muted-foreground">دارای سطح‌بندی</p> : <p className="text-sm text-muted-foreground">سطح‌بندی ندارد</p>}
+                </div>
+              ))}
             </div>
-
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold">ماژول‌ها</h2>
-              <span className="text-sm text-gray-600">
-                {selectedModules.length} انتخاب شده
-              </span>
-            </div>
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {selectedPackage.modules.map((mod) => {
-                const active = selectedModules.includes(mod.name);
-                return (
-                  <button
-                    key={mod.name}
-                    onClick={() => toggleModule(mod.name)}
-                    className={`p-4 rounded-xl border flex justify-between items-center transition ${
-                      active
-                        ? "bg-blue-600 text-white border-blue-600"
-                        : "bg-white hover:bg-gray-100"
-                    }`}
-                  >
-                    <span>{mod.name}</span>
-                    <span className="text-sm">
-                      {mod.price.toLocaleString()} تومان
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {selectedModules.length === 0 && (
-              <div className="text-center text-red-600 text-sm">
-                ⚠️ هیچ ماژولی انتخاب نشده است
+            {selectedPackage.levels && (
+              <div className="flex justify-center gap-4 mt-6">
+                {selectedPackage.levels.map(lvl => (
+                  <div key={lvl.name} onClick={() => setSelectedLevel(lvl)}
+                    className={`cursor-pointer px-5 py-3 rounded-xl border transition-all ${selectedLevel?.name===lvl.name ? "bg-primary text-white shadow-lg scale-105" : "bg-muted hover:bg-muted/80 hover:scale-105"}`}>
+                    {lvl.name}
+                  </div>
+                ))}
               </div>
             )}
           </section>
 
-          {/* Features */}
-          <section className="bg-gray-50 p-6 rounded-2xl shadow space-y-4">
-            <h2 className="text-xl font-bold">امکانات جانبی</h2>
+          {/* Modules */}
+          <section className="bg-muted/40 border rounded-2xl p-6 space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-bold">ماژول‌ها</h3>
+              <span className="text-sm text-muted-foreground">{selectedModules.length} انتخاب شده</span>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {selectedPackage.modules.map(mod => {
+                const active = selectedModules.includes(mod.name);
+                return (
+                  <button key={mod.name} onClick={() => toggleModule(mod.name)}
+                    className={`p-4 rounded-xl border flex justify-between items-center transition ${active ? "bg-primary text-white border-primary shadow-md" : "bg-background hover:bg-muted"}`}>
+                    <span>{mod.name}</span>
+                    <span className="text-sm">{mod.price.toLocaleString()} تومان</span>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
 
-            {features.map((f, i) => (
-              <div
-                key={f.name}
-                className="flex justify-between items-center border rounded-xl p-3"
-              >
-                <span>
-                  {f.name} ({f.price.toLocaleString()} تومان)
-                </span>
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => changeFeature(i, -1)}
-                    className="px-3 py-1 bg-gray-300 rounded"
-                  >
-                    -
-                  </button>
+          {/* Features */}
+          <section className="bg-muted/40 border rounded-2xl p-6 space-y-4">
+            <h3 className="text-xl font-bold">امکانات جانبی</h3>
+            {features.map((f,i) => (
+              <div key={f.name} className="flex justify-between items-center rounded-xl border p-3 bg-background">
+                <span className="text-sm">{f.name} ({f.price.toLocaleString()} تومان)</span>
+                <div className="flex items-center gap-3">
+                  <button onClick={()=>changeFeature(i,-1)} className="w-8 h-8 rounded-lg bg-muted">−</button>
                   <span>{f.count}</span>
-                  <button
-                    onClick={() => changeFeature(i, 1)}
-                    className="px-3 py-1 bg-gray-300 rounded"
-                  >
-                    +
-                  </button>
+                  <button onClick={()=>changeFeature(i,1)} className="w-8 h-8 rounded-lg bg-muted">+</button>
                 </div>
               </div>
             ))}
           </section>
+
+          <button onClick={generatePDF} className="w-full py-3 mt-4 rounded-xl font-medium bg-green-500 text-white hover:opacity-90">دانلود پیش‌فاکتور PDF</button>
         </div>
 
-        {/* -------- Desktop Sidebar -------- */}
-        <aside className="hidden md:block w-80 sticky top-24 h-fit">
-          <div className="bg-gray-100 p-6 rounded-2xl shadow space-y-4">
+        {/* Sidebar دسکتاپ */}
+        <aside className="hidden md:block sticky top-24 h-[calc(100vh-96px)] overflow-auto">
+          <div className="rounded-2xl border bg-background p-6 space-y-5 shadow-sm">
             <h3 className="text-xl font-bold">جمع کل</h3>
-
-            <div className="text-lg font-bold">
-              {totalPrice.toLocaleString()} تومان
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <div className="flex justify-between"><span>ماژول‌ها</span><span>{modulesPrice.toLocaleString()} تومان</span></div>
+              <div className="flex justify-between"><span>امکانات جانبی</span><span>{featuresPrice.toLocaleString()} تومان</span></div>
             </div>
-
-            <button
-              disabled={totalPrice === 0}
-              className={`w-full py-3 rounded-xl font-semibold ${
-                totalPrice === 0
-                  ? "bg-gray-300 text-gray-600"
-                  : "bg-green-600 text-white"
-              }`}
-            >
-              افزودن به سبد خرید
+            <div className="border-t pt-4 flex justify-between font-bold text-lg">
+              <span>مبلغ نهایی</span>
+              <span>{totalPrice.toLocaleString()} تومان</span>
+            </div>
+            <button disabled={totalPrice===0} className={`w-full py-3 rounded-xl font-medium transition ${totalPrice===0 ? "bg-muted text-muted-foreground" : "bg-primary text-white hover:opacity-90"}`}>
+              ادامه فرایند
             </button>
           </div>
         </aside>
       </main>
-
-      {/* -------- Mobile Bottom Bar -------- */}
-      <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t shadow px-4 py-3 flex justify-between items-center">
-        <div>
-          <div className="text-xs text-gray-500">قیمت کل</div>
-          <div className="font-bold">
-            {totalPrice.toLocaleString()} تومان
-          </div>
-        </div>
-        <button
-          disabled={totalPrice === 0}
-          className={`px-5 py-2 rounded-xl font-semibold ${
-            totalPrice === 0
-              ? "bg-gray-300 text-gray-600"
-              : "bg-green-600 text-white"
-          }`}
-        >
-          خرید
-        </button>
-      </div>
 
       <Footer />
     </>

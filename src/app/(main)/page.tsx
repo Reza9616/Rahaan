@@ -1,11 +1,10 @@
 import Hero from "@/app/(main)/components/Hero";
 import Service from "@/app/(main)/components/Service";
-import Plan from "@/app/(main)/components/Plan";
 import { Footer } from "@/components/Footer";
-import ProductDropCardDemo from "@/app/(main)/components/Product";
 import { QuickTickerOptions } from "@/components/quick-tooltip-actions";
 import Banner from "./components/Banner";
 import Banner2 from "./components/Banner2";
+import Way from "./components/Way";
 
 
 export default function Home() {
@@ -13,12 +12,11 @@ export default function Home() {
   <>
     <main>
       <Hero />
-      {/* <ProductDropCardDemo /> اسلایدر*/} 
+      <Way/>
       <Banner2 />
       <Service />
-      <Banner />
-      <Plan />
-      <div className="fixed top-1/2 -left-5 rotate-90 z-50">
+      <Banner /> 
+      <div className="fixed top-1/2 -left-12 sm:-left-5 rotate-90 z-50">
         <QuickTickerOptions ticker="AAPL" />
       </div>
     </main>

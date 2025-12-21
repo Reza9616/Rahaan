@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import WordRotateDemo from "@/components/WordRotate";
 import { Button } from '@/components/ui/button';
 import { Container } from "@/components/ui/Container";
+import { Link } from "lucide-react";
 
 export default function Hero() {
   return (
@@ -17,9 +18,12 @@ export default function Hero() {
                 </strong>، <br /> حسابداری اما <WordRotateDemo />
             </h1>
             <p className="text-muted-foreground max-w-md text-sm">
-              ساده و دقیق برای هر کسب‌وکار؛ از ERP سازمانی تا نرم‌افزارهای فروشگاهی؛ راه‌حل‌هایی که مدیریت مالی و تصمیمات روزانه‌ی شما را دقیق‌تر می‌کنند.
-            </p>
-            <Button>مشاوره رایگان</Button>
+  در <strong>داده پرداز آتی الگوریتم</strong>،<strong>رهان</strong> راهکارهایی ساده و دقیق برای هر کسب‌وکار ارائه می‌دهد؛ از ERP سازمانی تا نرم‌افزارهای فروشگاهی، ابزارهایی که مدیریت مالی و تصمیم‌گیری‌های روزانه‌ی شما را هوشمندانه‌تر و مؤثرتر می‌کنند.
+</p>
+         
+<Button asChild   className="w-fit px-6">
+        <a href="/callus">تماس با ما</a>
+      </Button>
           </div>
           <div className="flex justify-center lg:justify-end">
             <motion.figure 
@@ -31,8 +35,8 @@ export default function Hero() {
               }}
               className="relative z-10">
               <Image
-                width={850} 
-                height={600}
+                width={1050} 
+                height={700}
                 className=""
                 src="/header2.jpg"
                 alt=""

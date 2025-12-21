@@ -1,46 +1,82 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useState } from "react"
 
 export default function Banner() {
-    return (
-        <div 
-            className="relative w-full flex justify-between md:h-[70vh] py-4 px-8"
-        >
-            <div 
-                className="absolute inset-0 h-full bg-no-repeat bg-cover md:bg-contain md:bg-left"
-                style={{ backgroundImage: "url('./Banner.jpg')" }}
-            >
-                
-            </div>
-            
-            <div className="max-w-xs p-5 lg:max-w-sm space-y-4 my-auto text-white z-10">
-                <h1 className="text-2xl font-bold lg:text-2xl md:text-xl sm:text-lg">
-                    به مشاوره نیاز دارید؟
-                </h1>
-                <p className="mt-2 text-base lg:text-base md:text-sm sm:text-xs">
-                    شماره تلفن خود را وارد کنید. کارشناسان فروش با شما تماس خواهند گرفت.
-                </p>
-                <form className="space-y-4">
-                    <Input
-                        placeholder="نام و نام خانوادگی"
-                        className="w-full h-12 lg:h-12 md:h-11 sm:h-10 bg-white/90 backdrop-blur-sm text-foreground placeholder:text-gray-500 border-0 rounded-xl focus-visible:ring-2 focus-visible:ring-white text-base lg:text-base md:text-sm sm:text-xs"
-                    />
+  const [name, setName] = useState("")
+  const [phone, setPhone] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
 
-                    <div className="relative">
-                        <Input
-                            type="tel"
-                            placeholder="شماره تلفن"
-                            className="w-full h-12 lg:h-12 md:h-11 sm:h-10 pr-4 pl-32 bg-white/90 backdrop-blur-sm text-foreground placeholder:text-gray-500 border-0 rounded-xl focus-visible:ring-2 focus-visible:ring-white text-base lg:text-base md:text-sm sm:text-xs"
-                        />
-                        <Button
-                            type="submit"
-                            className="absolute left-1 top-1 h-10 lg:h-10 md:h-9 sm:h-8 w-28 lg:w-28 md:w-24 sm:w-20 rounded-l-xl rounded-r-xl bg-primary hover:bg-primary/90 text-white font-medium transition-all text-sm lg:text-base md:text-sm sm:text-xs"
-                        >
-                            ارسال
-                        </Button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    )
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setMessage(null)
+
+    try {
+      const res = await fetch("/api/users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, phone }),
+      })
+
+      const data = await res.json()
+
+      if (res.ok) {
+        setMessage({ type: "success", text: data.message })
+        setName("")
+        setPhone("")
+      } else {
+        setMessage({ type: "error", text: data.message || "خطا در ثبت اطلاعات" })
+      }
+    } catch (err) {
+      console.error(err)
+      setMessage({ type: "error", text: "ارتباط با سرور برقرار نشد" })
+    }
+
+    setLoading(false)
+  }
+
+  return (
+    <div className="relative w-full flex justify-between md:h-[70vh] py-4 px-8">
+      <div
+        className="absolute inset-0 h-full bg-no-repeat bg-cover md:bg-contain md:bg-left"
+        style={{ backgroundImage: "url('./Banner.jpg')" }}
+      />
+
+      <div className="max-w-xs p-5 lg:max-w-sm space-y-4 my-auto text-white z-10">
+        <h1 className="text-2xl font-bold">به مشاوره نیاز دارید؟</h1>
+        <p>شماره تلفن خود را وارد کنید. کارشناسان فروش با شما تماس خواهند گرفت.</p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <Input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="نام و نام خانوادگی"
+            className="text-black"
+          />
+
+          <Input
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            type="tel"
+            placeholder="شماره تلفن"
+            className="text-black"
+          />
+
+          <Button type="submit" disabled={loading} className="w-full mt-2">
+            {loading ? "در حال ارسال..." : "ارسال"}
+          </Button>
+
+          {message && (
+            <p className={message.type === "success" ? "text-green-500" : "text-red-500"}>
+              {message.text}
+            </p>
+          )}
+        </form>
+      </div>
+    </div>
+  )
 }

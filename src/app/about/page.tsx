@@ -33,7 +33,7 @@ export default function About() {
         {/* Hero Section */}
         <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
           <img
-            src="/header2.jpg"
+            src="/Aboutus.jpg"
             alt="About Us"
             className="absolute inset-0 h-full w-full object-cover"
           />

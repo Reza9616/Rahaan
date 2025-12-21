@@ -16,19 +16,52 @@ const TickerOptions = [
   {
     icon: <Phone className="h-6 w-6 text-background -rotate-90" />,
     tooltip: "تماس",
-    href: (ticker: string) => `/${ticker}?activeTab=Chat`,
+    href: (ticker: string) => `/callus`,
   },
   {
     icon: <Grid className="h-6 w-6 text-background" />,
     tooltip: "محصولات",
-    href: (ticker: string) => `/${ticker}?activeTab=Persona`,
-  },
+    href: (ticker: string) => `/Software`,
+  } ,
   {
     icon: <Monitor className="h-6 w-6 text-background -rotate-90" />,
     tooltip: "دمو",
-    href: (ticker: string) => `/${ticker}?activeTab=Competitors`,
+    href: (ticker: string) => `/callus`,
   },
 ];
+
+function TickerOptionPil({
+  icon,
+  tooltip,
+  href,
+  ticker,
+}: {
+  icon: React.ReactNode;
+  tooltip: string;
+  href: (ticker: string) => string;
+  ticker: string;
+}) {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            href={href(ticker)}
+            className="p-2 group hover:bg-muted-foreground/10 rounded-full flex items-center justify-center"
+          >
+            {icon}
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent
+          side="top"
+          className="p-1 bg-popover text-xs rounded-md border"
+        >
+          {tooltip}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
 
 export function QuickTickerOptions({ ticker }: { ticker: string }) {
   return (
@@ -46,46 +79,23 @@ export function QuickTickerOptions({ ticker }: { ticker: string }) {
   );
 }
 
-function TickerOptionPil({
-  icon,
-  tooltip,
-  href,
-  ticker,
-}: {
-  icon: React.ReactNode;
-  tooltip: string;
-  href: (ticker: string) => string;
-  ticker: string;
-}) {
-  return (
-    <Link
-      href={href(ticker)}
-      className="p-1 group hover:bg-muted-foreground/10 rounded-full cursor-pointer flex flex-col items-center justify-center"
-    >
-      {icon}
-      <p className="text-xs absolute -top-3.5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-popover px-1 py-0.5 rounded-md text-center border">
-        {tooltip}
-      </p>
-    </Link>
-  );
-}
-
-export const Component = ()=> {
+export default function Component() {
   const [ticker, setTicker] = useState("AAPL");
+
   return (
     <div className="flex w-full justify-center items-center h-[400px]">
       <TooltipProvider>
         <Tooltip key={ticker} delayDuration={0.2}>
           <TooltipTrigger asChild>
-            <Button variant="outline" className="rounded-full" size={"icon"}>
-              <User className={"size-6"} />
+            <Button variant="outline" className="rounded-full" size="icon">
+              <User className="h-6 w-6" />
             </Button>
           </TooltipTrigger>
           <TooltipContent
             side="right"
             sideOffset={0}
             align="center"
-            className="p-0 bg-popover rounded-xl ml-1"
+            className="p-2 bg-popover rounded-xl ml-1"
           >
             <QuickTickerOptions ticker={ticker} />
           </TooltipContent>

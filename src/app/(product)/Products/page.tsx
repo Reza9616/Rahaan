@@ -1,87 +1,118 @@
-import NavigationMenuDemo from "@/components/navbar";
+"use client";
 import { Footer } from "@/components/Footer";
-import { Link } from "lucide-react";
+import NavigationMenuDemo from "@/components/navbar";
+import { useEffect, useState } from "react";
 
-const hardwareProducts = [
-  {
-    name: "صندوق فروشگاهی",
-    description: "فیش پرینتر با سرعت چاپ بالا و مناسب فروشگاه‌ها",
-    image: "/safebox.jpg",
-    slug: "printer-a",
-   
-  },
-  {
-    name: "فیش پرینتر مدل B",
-    description: "فیش پرینتر جمع و جور با قابلیت چاپ حرارتی",
-    image: "/fishprinter.png",
-    slug: "printer-b",
-   
-  },
-  {
-    name: "موس حرفه‌ای",
-    description: "موس با دقت بالا و طراحی ارگونومیک",
-    image: "/mouse.jpg",
-    slug: "mouse",
-    
-  },
-  {
-    name: "بارکد خوان",
-    description: "کیبورد با کلیدهای نرم و عمر طولانی",
-    image: "/barcod.png",
-    slug: "keyboard",
-    
-  },
-];
+interface Product {
+  KalaPuID: number;
+  KalaName: string;
+  KalaCod: number;
+  KalaBarCode: string;
+  KalaSellEnable: boolean;
+}
 
-export default function Products() {
+export default function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Failed to fetch products');
+        }
+        return res.json();
+      })
+      .then(data => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching products:', err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div className="p-4">در حال بارگذاری...</div>;
+
+  const filteredProducts = products.filter(p =>
+    p.KalaName.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <>
       <NavigationMenuDemo />
+      <div className="max-w-7xl mx-auto p-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
+        
+        <div className="lg:col-span-1 space-y-6">
+          <div className="border rounded-lg p-4 shadow ">
+            <h2 className="font-bold mb-2 text-lg">فیلتر محصولات</h2>
+            <ProductFilter />
+          </div>
+        </div>
 
-      <main className="bg-background">
-        {/* Header */}
-        <section className="py-20 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">محصولات سخت‌افزاری رهان</h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-            تجهیزات سخت‌افزاری رهان شامل فیش پرینتر، موس و کیبورد، مناسب فروشگاه‌ها و کسب‌وکارها
-          </p>
-        </section>
+        <div className="lg:col-span-3">
+          <div className="mb-6">
+            <input
+              type="text"
+              placeholder="جستجو محصولات..."
+              className="w-full border rounded p-2"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
 
-        {/* Products Grid */}
-   <section className="max-w-7xl mx-auto px-6 pb-24 grid md:grid-cols-2 lg:grid-cols-3 gap-10">
-{hardwareProducts.map((product) => (
-<div
-key={product.name}
-className="rounded-3xl border bg-background shadow-sm hover:shadow-lg transition overflow-hidden"
->
-<img
-src={product.image}
-alt={product.name}
-className="h-48 w-full object-cover"
-/>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map(p => (
+                <div key={p.KalaPuID} className="border rounded-lg p-4 shadow hover:shadow-lg transition flex flex-col">
+  <div className="w-full h-48 bg-gray-200 flex items-center justify-center mb-4">
+    <span>تصویر</span>
+  </div>
+  <h2 className="text-lg font-semibold">{p.KalaName}</h2>
+  <p className="text-sm text-gray-500 mb-2">کد محصول: {p.KalaCod}</p>
 
-
-<div className="p-6 space-y-4">
-<div>
-<h2 className="text-xl font-bold">{product.name}</h2>
-<p className="text-sm text-muted-foreground">
-{product.description}
-</p>
+  <button
+    className="mt-auto w-full bg-[#4f89c9] hover:bg-[#4f89c9] text-white py-2 rounded-lg font-semibold transition"
+    onClick={() => alert(`${p.KalaName} به سبد خرید اضافه شد!`)}
+  >
+    افزودن به سبد خرید
+  </button>
 </div>
-
- 
-
- 
-<button
-  className="w-full rounded-xl bg-[#4f89c9] hover:bg-[#1877F2]-400 py-2 text-sm font-medium text-white transition"
- >جزییات بیشتر</button>
- </div>
-</div>
-))}
-</section>
-      </main>
-
+              ))
+            ) : (
+              <div className="col-span-full text-center text-gray-500">
+                محصولی یافت نشد
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
       <Footer />
     </>
+  );
+}
+
+/* فیلتر محصولات ساده */
+function ProductFilter() {
+  return (
+    <div className="space-y-2">
+      <div>
+        <label>وضعیت فروش:</label>
+        <select className="border rounded p-1 w-full">
+          <option value="">همه</option> 
+          <option value="unavailable">ناموجود</option>
+        </select>
+      </div>
+      <div>
+        <label>دسته‌بندی:</label>
+        <select className="border rounded p-1 w-full">
+          <option value="">همه</option>
+          <option value="1">دسته 1</option>
+          <option value="2">دسته 2</option>
+        </select>
+      </div>
+    </div>
   );
 }
