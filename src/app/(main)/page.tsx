@@ -5,6 +5,7 @@ import { QuickTickerOptions } from "@/components/quick-tooltip-actions";
 import Banner from "./components/Banner";
 import Banner2 from "./components/Banner2";
 import Way from "./components/Way";
+import WorkProcess from "./components/WorkProcess";
 
 
 export default function Home() {
@@ -12,7 +13,7 @@ export default function Home() {
   <>
     <main>
       <Hero />
-      <Way/>
+      <WorkProcess /> 
       <Banner2 />
       <Service />
       <Banner /> 
@@ -20,6 +21,7 @@ export default function Home() {
         <QuickTickerOptions ticker="AAPL" />
       </div>
     </main>
+      <Way/>
     <Footer />
   </>
   );

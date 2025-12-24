@@ -10,10 +10,10 @@ export default function SecondaryFeatures() {
     <section
       id="service"
       aria-label="Features of Rahaan Product"
-      className="py-20 sm:py-32"
+      className="py-15 sm:py-15 bg-accent"
     >
-      <Container>
-        <div className="flex flex-col sm:flex-row gap-8 py-12 items-center">
+      <Container >
+        <div className=" flex flex-col sm:flex-row gap-4 py-8 items-center">
           <div className="sm:w-1/2 w-full flex justify-center">
               <Image
                 src="/ErpShadow.png"
@@ -37,7 +37,7 @@ export default function SecondaryFeatures() {
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-8 py-12 items-center">
+        <div className="flex flex-col sm:flex-row gap-4 py-8 items-center">
           <div className="sm:w-1/2 w-full flex flex-col space-y-6 order-2 sm:order-1">
             <div className="space-y-2">
               <h4 className="font-semibold text-xl">رهان صنعتی</h4>
@@ -64,7 +64,7 @@ export default function SecondaryFeatures() {
         </div>
 
 
-        <div className="flex flex-col sm:flex-row gap-8 py-12 items-center">
+        <div className="flex flex-col sm:flex-row gap-4 py-8 items-center">
           <div className="sm:w-1/2 w-full flex justify-center">
             <Image
               src="/storeShadow.png"

@@ -75,17 +75,10 @@ export default function NavigationMenuDemo() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button className="text-xs sm:text-sm">
-              دمو رایگان
-            </Button>
-
-            <Button
-              variant="outline"
-              className="hidden lg:block text-xs sm:text-sm"
-            >
-              فعال‌سازی / مشاوره
-            </Button>
-
+            <Button className="text-xs sm:text-sm" >
+             <a href="/checkout"> دمو رایگان
+</a>            </Button>
+  
             <MobileNav />
           </div>
         </div>

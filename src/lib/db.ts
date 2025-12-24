@@ -1,10 +1,12 @@
 // lib/db.ts
 import * as sql from "mssql";
-
+console.log("DB_SERVER:", process.env.DB_SERVER);
+console.log("DB_USER:", process.env.DB_USER);
+console.log("DB_NAME:", process.env.DB_NAME);
 const config: sql.config = {
   user: process.env.DB_USER!,
   password: process.env.DB_PASSWORD!,
-  server: process.env.DB_SERVER!,
+  server: String(process.env.DB_SERVER!),
   database: process.env.DB_NAME!,
   options: {
     encrypt: false,
