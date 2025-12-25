@@ -1,6 +1,8 @@
-// app/about/page.tsx
-import { Footer } from "@/components/Footer";
+"use client";
+
 import NavigationMenuDemo from "@/components/navbar";
+import { Footer } from "@/components/Footer";
+import { motion } from "framer-motion";
 
 export default function About() {
   const timeline = [
@@ -29,62 +31,131 @@ export default function About() {
   return (
     <>
       <NavigationMenuDemo />
-      <main className="relative">
-        {/* Hero Section */}
-        <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
-          <img
-            src="/Aboutus.jpg"
-            alt="About Us"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="relative z-10 text-center text-white px-6">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">درباره ما</h1>
-            <p className="max-w-2xl mx-auto text-lg text-white/90">
-              ما در رهان، با تکیه بر دانش فنی و تجربه تخصصی، راهکارهای نرم‌افزاری یکپارچه برای کسب‌وکارها طراحی می‌کنیم و به آن‌ها کمک می‌کنیم فرآیندهای سازمانی خود را هوشمندتر و سریع‌تر مدیریت کنند.
-            </p>
+
+      <main
+        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50"
+        dir="rtl"
+      >
+        {/* Hero */}
+        <section className="relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#4f89c9]/10 to-transparent" />
+          <div className="absolute top-20 right-20 w-72 h-72 bg-[#4f89c9]/10 rounded-full blur-3xl" />
+          <div className="absolute bottom-10 left-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
+
+          <div className="max-w-7xl mx-auto px-6 pt-24 pb-16 relative text-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-5xl md:text-6xl font-black mb-6"
+            >
+              <span className="bg-gradient-to-l from-[#4f89c9] via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                درباره رهان
+              </span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="max-w-3xl mx-auto text-xl text-slate-600 leading-relaxed"
+            >
+              ما در رهان، با تکیه بر دانش فنی و تجربه تخصصی، راهکارهای نرم‌افزاری
+              یکپارچه برای کسب‌وکارها طراحی می‌کنیم.
+            </motion.p>
           </div>
         </section>
 
-        {/* Content Section */}
-        <section className="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold">شرکت نرم‌افزاری رهان</h2>
-            <p className="text-muted-foreground leading-7">
-              شرکت رهان با تمرکز بر توسعه نرم‌افزارهای سازمانی و راهکارهای ERP، از سال ۱۳۹۷ فعالیت خود را آغاز کرده است. تیم ما متشکل از هفت نفر متخصص است که هر کدام در حوزه کاری خود مسئولیت دارند و مطابق با منشور اخلاقی شرکت، به صورت هماهنگ و حرفه‌ای فعالیت می‌کنند.
-            </p>
-            <p className="text-muted-foreground leading-7">
-              در طول شش سال گذشته، ما فرصت داشته‌ایم چندین نرم‌افزار تخصصی برای انواع کسب‌وکارها طراحی و توسعه دهیم؛ از سازمان‌ها و هلدینگ‌ها گرفته تا فروشگاه‌ها و وب‌سایت‌ها. هدف ما همواره ایجاد راهکارهایی است که هم ساده و کاربردی باشند و هم نیازهای پیچیده‌ی سازمان‌ها را برطرف کنند.
-            </p>
-            <p className="text-muted-foreground leading-7">
-              تیم ما متشکل از متخصصان تحلیل سیستم، توسعه نرم‌افزار، طراحی رابط کاربری و پشتیبانی است که با همکاری نزدیک، تجربه‌ای مطمئن و پایدار برای مشتریان خلق می‌کنند. ما باور داریم تکنولوژی زمانی ارزشمند است که پیچیدگی‌ها را حذف و بهره‌وری را افزایش دهد.
-            </p>
-          </div>
+        {/* Content */}
+       {/* Content Section with Background Image */}
+<section className="relative overflow-hidden">
+  {/* background image */}
+  <div
+    className="absolute inset-0 bg-cover bg-center"
+    style={{ backgroundImage: "url(/Aboutus.jpg)" }}
+  />
 
-          <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-to-tr from-primary/20 to-secondary/20 rounded-3xl blur-2xl" />
-            <img
-              src="Team.jpg"
-              alt="Our Team"
-              className="relative rounded-3xl shadow-lg"
-            />
-          </div>
-        </section>
+  {/* overlay */}
+  <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/50 to-black/30" />
 
-        {/* Timeline Section */}
-        <section className="max-w-4xl mx-auto px-6 py-16">
-          <h2 className="text-3xl font-bold mb-12 text-center">مسیر رشد رهان</h2>
-          <div className="relative border-l-2 border-blue-300 ml-4">
-            {timeline.map((step, idx) => (
-              <div key={idx} className="mb-10 ml-6 relative">
-                <div className="absolute -left-5 top-0 w-4 h-4 rounded-full bg-blue-500 border-2 border-white" />
-                <h3 className="text-xl font-semibold mb-1">{step.title}</h3>
-                <p className="text-muted-foreground">{step.description}</p>
-              </div>
+  <div className="relative max-w-7xl mx-auto px-6 py-24 grid lg:grid-cols-2 gap-16 items-center text-white">
+    <motion.div
+      initial={{ opacity: 0, x: 40 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.6 }}
+      className="space-y-6"
+    >
+      <h2 className="text-3xl font-bold">
+        شرکت نرم‌افزاری رهان
+      </h2>
+
+      <p className="text-white/90 leading-8">
+        شرکت رهان با تمرکز بر توسعه نرم‌افزارهای سازمانی و راهکارهای ERP،
+        از سال ۱۳۹۷ فعالیت خود را آغاز کرده است. تیم ما متشکل از هفت نفر
+        متخصص است که هر کدام در حوزه کاری خود مسئولیت دارند.
+      </p>
+
+      <p className="text-white/85 leading-8">
+        طی شش سال گذشته، ما فرصت طراحی و توسعه نرم‌افزارهای تخصصی برای
+        سازمان‌ها، هلدینگ‌ها، فروشگاه‌ها و وب‌سایت‌ها را داشته‌ایم.
+      </p>
+
+      <p className="text-white/85 leading-8">
+        ما باور داریم تکنولوژی زمانی ارزشمند است که پیچیدگی‌ها را حذف و
+        بهره‌وری را افزایش دهد.
+      </p>
+    </motion.div>
+
+    {/* optional image/card */}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6 }}
+      className="hidden lg:block"
+    >
+      <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl">
+        <h3 className="text-xl font-bold mb-4 text-[#cfe5ff]">
+          چرا رهان؟
+        </h3>
+        <ul className="space-y-3 text-white/90">
+          <li>• تجربه عملیاتی</li>
+          <li>• راهکارهای هوشمندانه</li>
+          <li>• پشتیبانی متعهدانه</li>
+          <li>• وب اپلیکیشن رهان</li>
+          <li>• هوش مصنوعی رهان</li>
+        </ul>
+      </div>
+    </motion.div>
+  </div>
+</section>
+
+        {/* Timeline */}
+        <section className="max-w-5xl mx-auto px-6 py-20">
+          <h2 className="text-3xl font-bold text-center mb-16">
+            مسیر رشد رهان
+          </h2>
+
+          <div className="relative border-r-2 border-[#4f89c9]/30 pr-6">
+            {timeline.map((step, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="mb-12 relative"
+              >
+                <div className="absolute -right-[14px] top-1 w-6 h-6 rounded-full bg-gradient-to-br from-[#4f89c9] to-indigo-600 border-4 border-white shadow-lg" />
+                <h3 className="text-xl font-bold mb-2">{step.title}</h3>
+                <p className="text-slate-600 leading-relaxed">
+                  {step.description}
+                </p>
+              </motion.div>
             ))}
           </div>
         </section>
       </main>
+
       <Footer />
     </>
   );

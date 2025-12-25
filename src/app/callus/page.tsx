@@ -13,24 +13,7 @@ export default function ContactPage() {
       <NavigationMenuDemo />
 
       <main className="relative">
-        {/* Hero */}
-        <section className="relative h-[60vh] flex items-center justify-center overflow-hidden">
-          <img
-            src="/contact.jpg"
-            alt="Contact"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/50" />
-          <div className="relative z-10 text-center text-white px-6">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              تماس با ما
-            </h1>
-            <p className="max-w-2xl mx-auto text-lg text-white/90">
-              برای دریافت مشاوره یا طرح سوال، از طریق فرم زیر با ما در ارتباط باشید
-            </p>
-          </div>
-        </section>
-
+      
         {/* Content */}
         <section className="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-14">
           {/* Info */}

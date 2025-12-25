@@ -33,8 +33,12 @@ export async function POST(req: Request) {
       `);
 
     return NextResponse.json({ success: true, message: "مشتری اضافه شد" });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
-    return NextResponse.json({ success: false, error: error.message });
+    let errorMessage = "خطای ناشناخته";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    return NextResponse.json({ success: false, error: errorMessage });
   }
 }

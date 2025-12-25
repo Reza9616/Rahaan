@@ -1,41 +1,30 @@
-
-// app/api/auth/login/route.ts
+// app/api/products/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getDB } from "@/lib/db";
 import * as sql from "mssql";
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { email, password } = body;
-
-    if (!email || !password) {
-      return NextResponse.json({ message: "ایمیل و رمز عبور لازم است" }, { status: 400 });
-    }
-
     const db = await getDB();
 
+    // Query ستون‌های اصلی محصول
     const result = await db
       .request()
-      .input("email", sql.NVarChar, email)
-      .input("password", sql.NVarChar, password)
       .query(`
-        SELECT *
-        FROM ViewWebSiteSign
-        WHERE ViewWebSiteSignEmail = @email AND ViewWebSiteSignPassword = @password
+        SELECT KalaPuID, KalaName, KalaCod, KalaBarCode, KalaSellEnable
+        FROM SabtMahsol
+        WHERE KalaSellEnable = 1
+        ORDER BY KalaPuID DESC
       `);
 
-    if (result.recordset.length === 0) {
-      return NextResponse.json({ message: "ایمیل یا رمز عبور اشتباه است" }, { status: 401 });
-    }
+    console.log("✅ Products fetched:", result.recordset.length);
 
-    // برگشت اطلاعات کاربر بدون پسورد
-    const user = result.recordset[0];
-    delete user.ViewWebSiteSignPassword;
-
-    return NextResponse.json({ message: "ورود موفق", user }, { status: 200 });
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: "خطا در ورود" }, { status: 500 });
-  }
+    return NextResponse.json(result.recordset);
+  }catch (error) {
+  console.error("❌ Error fetching products:", error);
+  return NextResponse.json(
+    { message: "خطا در دریافت محصولات", error: String(error) },
+    { status: 500 }
+  );
+}
 }
