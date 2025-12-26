@@ -3,211 +3,289 @@
 import NavigationMenuDemo from "@/components/navbar";
 import { Footer } from "@/components/Footer";
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Search, ShoppingCart, Filter, X } from "lucide-react";
+import { Search, ShoppingCart, Filter, Check, Building2, Sparkles, LayoutGrid } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useCart, Module } from "@/context/CartContext";
 
 interface Product {
   KalaPuID: number;
   KalaName: string;
   KalaCod: number;
-  KalaBarCode: string;
-  KalaSellEnable: boolean;
+  KalaType: number;
+  KalaGroup: number;
+  Price: number;
 }
 
-export default function Home() {
+const PRODUCT_TYPES = [
+  { id: 1, label: "سازمانی" },
+  { id: 2, label: "شرکتی" },
+  { id: 3, label: "فروشگاهی" },
+];
+
+const PRODUCT_TAGS = [
+  { id: 10, label: "موبایل" },
+  { id: 20, label: "نرم‌افزار" },
+  { id: 30, label: "سرویس" },
+];
+
+const LEVELS = [
+  { id: "all", label: "همه", icon: LayoutGrid },
+  { id: "small", label: "پایه", icon: Sparkles },
+  { id: "medium", label: "حرفه‌ای", icon: Building2 },
+  { id: "enterprise", label: "سازمانی", icon: Building2 },
+];
+
+export default function ProductsPage() {
+  const { cart, setCart } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
   const [search, setSearch] = useState("");
+  const [type, setType] = useState<number | null>(null);
+  const [tag, setTag] = useState<number | null>(null);
+  const [selectedLevel, setSelectedLevel] = useState("all");
+
+  const addModuleToCart = (product: Product) => {
+    const module: Module = { name: product.KalaName, price: product.Price, qty: 1 };
+    setCart(prev => {
+      const existing = prev.modules.find(m => m.name === module.name);
+      let updatedModules;
+      if (existing) {
+        updatedModules = prev.modules.map(m =>
+          m.name === module.name ? { ...m, qty: m.qty + 1 } : m
+        );
+      } else {
+        updatedModules = [...prev.modules, module];
+      }
+      return { ...prev, modules: updatedModules };
+    });
+  };
 
   useEffect(() => {
-    fetch("/api/products")
-      .then(res => res.ok ? res.json() : Promise.reject())
-      .then(data => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, []);
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (type) params.append("type", type.toString());
+    if (tag) params.append("tag", tag.toString());
+    if (selectedLevel && selectedLevel !== "all") params.append("level", selectedLevel);
 
-  const filteredProducts = products.filter(p =>
+    fetch(`/api/getallproduct?${params.toString()}`)
+      .then(res => res.json())
+      .then(data => setProducts(data))
+      .finally(() => setLoading(false));
+  }, [type, tag, selectedLevel]);
+
+  const filtered = products.filter(p =>
     p.KalaName.toLowerCase().includes(search.toLowerCase())
   );
-
-  const hasActiveFilters = search.length > 0;
 
   return (
     <>
       <NavigationMenuDemo />
 
-      <main
-        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50"
-        dir="rtl"
-      >
-        {/* Hero */}
-        <section className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#4f89c9]/5 to-transparent" />
-          <div className="absolute top-20 right-20 w-72 h-72 bg-[#4f89c9]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 left-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
-
-          <div className="max-w-7xl mx-auto px-6 pt-20 pb-12 relative">
+   <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#4f89c9]/5 to-transparent" />
+        <div className="absolute top-20 right-20 w-72 h-72 bg-[#4f89c9]/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-10 left-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
+        
+        <div className="mt-10 max-w-7xl mx-auto px-6 pt-20 pb-12 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-center"
+          >
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-              className="text-center"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#4f89c9]/10 text-[#4f89c9] text-sm font-medium mb-6"
             >
-              <h1 className="text-5xl md:text-6xl font-black mb-6">
-                <span className="bg-gradient-to-l from-[#4f89c9] via-indigo-600 to-violet-600 bg-clip-text text-transparent">
-                  فروشگاه محصولات
-                </span>
-              </h1>
-              <p className="text-xl text-slate-600">
-                لیست کامل کالاهای قابل فروش
-              </p>
+              <Sparkles className="w-4 h-4 text-[#4f89c9]"  />
+              مجموعه کامل قطعات سخت افزاری
             </motion.div>
+            
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6">
+              <span className="bg-gradient-to-l from-[#4f89c9] via-[#4f89c9] to-[#4f89c9] bg-clip-text text-transparent">
+              رهان 
+              </span>
+            </h1>
+            
+            <p className="text-xl md:text-2xl text-[#4f89c9] max-w-3xl mx-auto leading-relaxed">
+                 قطعات سخت افزاری  
+            </p>
+          </motion.div>
+        </div>
+      </section>
+      <main dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 px-6 py-12">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_340px] gap-10">
+
+          {/* ===== Products ===== */}
+          <div>
+            <div className="relative mb-8">
+              <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Input
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                placeholder="جستجو در محصولات..."
+                className="pr-12 py-6 rounded-2xl bg-white shadow"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <AnimatePresence>
+                {loading ? (
+                  <p className="col-span-full text-center text-slate-400 py-20">در حال بارگذاری...</p>
+                ) : filtered.length ? (
+                  filtered.map(p => (
+                    <motion.div
+                      key={p.KalaPuID}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      whileHover={{ scale: 1.03, boxShadow: "0 20px 40px rgba(0,0,0,0.15)" }}
+                      className="relative bg-white rounded-3xl shadow-lg transition-all"
+                    >
+                      {p.Price > 0 && (
+                        <div className="absolute top-4 left-4 bg-emerald-500 text-white text-sm font-bold px-4 py-1 rounded-xl">
+                          {p.Price.toLocaleString("fa-IR")} تومان
+                        </div>
+                      )}
+                      <div className="h-48 bg-slate-200 rounded-t-3xl flex items-center justify-center text-slate-400">
+                        تصویر محصول
+                      </div>
+                      <div className="p-6">
+                        <h3 className="font-bold text-lg text-[#4f89c9] mb-2">{p.KalaName}</h3>
+                        <p className="text-sm text-slate-500 mb-4">کد کالا: {p.KalaCod}</p>
+
+                        {p.Price === 0 ? (
+                          <span className="inline-block mb-4 px-3 py-1 rounded-xl bg-slate-100 text-slate-500 text-sm">
+                            قیمت تماس بگیرید
+                          </span>
+                        ) : (
+                          <p className="text-sm text-slate-600 mb-4">{p.Price.toLocaleString()} تومان</p>
+                        )}
+
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => addModuleToCart(p)}
+                          className="w-full py-5 rounded-2xl bg-[#4f89c9] text-white flex gap-2 justify-center font-semibold"
+                        >
+                          <ShoppingCart className="w-5 h-5" />
+                          افزودن به سبد خرید
+                        </motion.button>
+                      </div>
+                    </motion.div>
+                  ))
+                ) : (
+                  <p className="col-span-full text-center text-slate-400 py-20">محصولی یافت نشد</p>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
-        </section>
 
-        {/* Content */}
-        <section className="max-w-7xl mx-auto px-6 pb-20">
-          <div className="grid lg:grid-cols-[1fr_340px] gap-10">
+          {/* ===== Filters ===== */}
+          <aside className="sticky top-8 h-fit space-y-6">
+            {/* Type + Tag */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white">
+              <h4 className="font-bold mb-4 text-lg flex items-center gap-2">
+                <Filter className="text-[#4f89c9]" /> فیلتر محصولات
+              </h4>
 
-            {/* Products */}
-            <div className="order-2 lg:order-1">
-              {/* Search */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="mb-8"
-              >
-                <div className="relative">
-                  <Search className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
-                  <Input
-                    placeholder="جستجو در محصولات..."
-                    className="pr-14 pl-6 py-7 text-lg rounded-2xl bg-white/80 backdrop-blur border shadow-lg"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                </div>
-
-                <div className="flex justify-between items-center mt-4">
-                  <p className="text-slate-500">
-                    <span className="font-bold text-[#4f89c9]">
-                      {filteredProducts.length}
-                    </span>{" "}
-                    کالا یافت شد
-                  </p>
-
-                  {hasActiveFilters && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setSearch("")}
-                      className="text-slate-500 hover:text-red-500"
+              {/* Type */}
+              <div className="mb-6">
+                <h5 className="font-bold mb-2">نوع محصول</h5>
+                <div className="grid grid-cols-2 gap-3">
+                  {PRODUCT_TYPES.map(t => (
+                    <button
+                      key={t.id}
+                      onClick={() => setType(t.id)}
+                      className={`p-3 rounded-xl border text-sm font-semibold ${
+                        type === t.id
+                          ? "border-[#4f89c9] bg-[#4f89c9]/10 text-[#4f89c9]"
+                          : "border-slate-200 text-slate-600"
+                      }`}
                     >
-                      <X className="w-4 h-4 ml-1" />
-                      پاک کردن جستجو
-                    </Button>
-                  )}
+                      {t.label}
+                    </button>
+                  ))}
+                  <button onClick={() => setType(null)} className="col-span-2 text-sm text-slate-400 hover:text-red-500">
+                    حذف فیلتر نوع
+                  </button>
                 </div>
-              </motion.div>
+              </div>
 
-              {/* Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <AnimatePresence mode="popLayout">
-                  {loading ? (
-                    <motion.p className="col-span-full text-center text-xl text-slate-400 py-20">
-                      در حال بارگذاری...
-                    </motion.p>
-                  ) : filteredProducts.length > 0 ? (
-                    filteredProducts.map((p, i) => (
-                      <motion.div
-                        key={p.KalaPuID}
-                        layout
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.4, delay: i * 0.05 }}
-                        className="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all"
-                      >
-                        <div className="h-56 bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center text-slate-400 text-3xl">
-                          تصویر
-                        </div>
-
-                        <div className="p-6">
-                          <h2 className="text-xl font-bold text-[#4f89c9] mb-2 line-clamp-2">
-                            {p.KalaName}
-                          </h2>
-                          <p className="text-slate-500 mb-6">
-                            کد کالا: {p.KalaCod}
-                          </p>
-
-                          <Button
-                            className="w-full py-6 rounded-2xl bg-[#4f89c9] hover:bg-[#4f89c9]/90 text-lg font-semibold flex gap-3"
-                            onClick={() =>
-                              alert(`${p.KalaName} به سبد خرید اضافه شد`)
-                            }
-                          >
-                            <ShoppingCart className="w-5 h-5" />
-                            افزودن به سبد خرید
-                          </Button>
-                        </div>
-                      </motion.div>
-                    ))
-                  ) : (
-                    <motion.p
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="col-span-full text-center text-2xl text-slate-400 py-20"
+              {/* Tags */}
+              <div>
+                <h5 className="font-bold mb-2">دسته‌بندی</h5>
+                <div className="flex flex-wrap gap-2">
+                  {PRODUCT_TAGS.map(t => (
+                    <button
+                      key={t.id}
+                      onClick={() => setTag(t.id)}
+                      className={`px-4 py-2 rounded-xl text-sm ${
+                        tag === t.id
+                          ? "bg-gradient-to-l from-[#4f89c9] to-indigo-600 text-white shadow"
+                          : "bg-slate-100 text-slate-600"
+                      }`}
                     >
-                      محصولی یافت نشد
-                    </motion.p>
-                  )}
-                </AnimatePresence>
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+                {tag && (
+                  <button onClick={() => setTag(null)} className="mt-2 text-sm text-slate-400 hover:text-red-500">
+                    حذف فیلتر دسته‌بندی
+                  </button>
+                )}
               </div>
             </div>
 
-            {/* Sidebar */}
-            <motion.aside
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
-              className="order-1 lg:order-2 lg:sticky lg:top-8 h-fit"
-            >
-              <div className="bg-white/80 backdrop-blur rounded-3xl p-6 shadow-xl">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4f89c9] to-indigo-600 flex items-center justify-center">
-                    <Filter className="w-5 h-5 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold">فیلترها</h3>
+            {/* Levels */}
+            <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4f89c9] to-indigo-600 flex items-center justify-center">
+                  <Filter className="w-5 h-5 text-white" />
                 </div>
-
-                <ProductFilter />
+                <h3 className="text-xl font-bold text-slate-800">سطح سازمانی</h3>
               </div>
-            </motion.aside>
-          </div>
-        </section>
+
+              <div className="grid grid-cols-2 gap-3">
+                {LEVELS.map(level => {
+                  const LevelIcon = level.icon;
+                  return (
+                    <button
+                      key={level.id}
+                      onClick={() => setSelectedLevel(level.id)}
+                      className={`relative p-4 rounded-2xl border-2 transition-all duration-300 ${
+                        selectedLevel === level.id
+                          ? "border-[#4f89c9] bg-[#4f89c9]/10 text-[#4f89c9]"
+                          : "border-slate-200 hover:border-[#4f89c9]/50 text-slate-600"
+                      }`}
+                    >
+                      {selectedLevel === level.id && (
+                        <motion.div
+                          layoutId="levelIndicator"
+                          className="absolute top-2 left-2 w-5 h-5 rounded-full bg-[#4f89c9] flex items-center justify-center"
+                        >
+                          <Check className="w-3 h-3 text-white" />
+                        </motion.div>
+                      )}
+                      <LevelIcon className="w-6 h-6 mx-auto mb-2" />
+                      <span className="text-sm font-semibold">{level.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+          </aside>
+        </div>
       </main>
 
       <Footer />
     </>
-  );
-}
-
-function ProductFilter() {
-  return (
-    <div className="space-y-6">
-      <div>
-        <label className="block mb-2 font-medium">وضعیت فروش</label>
-        <select className="w-full p-4 rounded-2xl border bg-background focus:ring-4 focus:ring-[#4f89c9]/20">
-          <option>همه</option>
-          <option>موجود</option>
-          <option>ناموجود</option>
-        </select>
-      </div>
-    </div>
   );
 }

@@ -12,7 +12,7 @@ export default function ContactPage() {
     <>
       <NavigationMenuDemo />
 
-      <main className="relative">
+      <main className="relative mt-25">
       
         {/* Content */}
         <section className="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-14">
@@ -39,7 +39,7 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-semibold">تلفن</h3>
                   <p className="text-muted-foreground">
-                    +98 21 1234 5678
+                    051-42227051
                   </p>
                 </div>
               </div>

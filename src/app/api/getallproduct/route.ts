@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     const request = db.request();
 
     let where = `
-      WHERE k.AnbarPuID = 2020
+      WHERE k.AnbarPuID = 2019
         AND k.KalaSellEnable = 1
     `;
 

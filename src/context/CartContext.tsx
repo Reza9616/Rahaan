@@ -1,10 +1,5 @@
 "use client";
-
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-
-/* =======================
-   Types
-======================= */
 
 export interface Module {
   name: string;
@@ -23,31 +18,18 @@ export interface Cart {
   features: Feature[];
 }
 
-/* =======================
-   Context Type
-======================= */
-
 interface CartContextType {
   cart: Cart;
   setCart: React.Dispatch<React.SetStateAction<Cart>>;
-  addToCart: (data: Cart) => void;
+  addModuleToCart: (module: Module) => void;
   clearCart: () => void;
 }
 
-/* =======================
-   Context
-======================= */
-
 const CartContext = createContext<CartContextType | undefined>(undefined);
-
-/* =======================
-   Provider
-======================= */
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<Cart>({ modules: [], features: [] });
 
-  // Load cart from localStorage on mount
   useEffect(() => {
     if (typeof window !== "undefined") {
       const stored = localStorage.getItem("cart");
@@ -55,30 +37,35 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  // Save cart to localStorage whenever it changes
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("cart", JSON.stringify(cart));
     }
   }, [cart]);
 
-  const addToCart = (data: Cart) => {
-    setCart(data); // replace current cart
-    // localStorage is updated automatically via useEffect
+  const addModuleToCart = (module: Module) => {
+    setCart(prev => {
+      const existing = prev.modules.find(m => m.name === module.name);
+      let updatedModules;
+      if (existing) {
+        updatedModules = prev.modules.map(m =>
+          m.name === module.name ? { ...m, qty: m.qty + 1 } : m
+        );
+      } else {
+        updatedModules = [...prev.modules, { ...module, qty: 1 }];
+      }
+      return { ...prev, modules: updatedModules };
+    });
   };
 
   const clearCart = () => setCart({ modules: [], features: [] });
 
   return (
-    <CartContext.Provider value={{ cart, setCart, addToCart, clearCart }}>
+    <CartContext.Provider value={{ cart, setCart, addModuleToCart, clearCart }}>
       {children}
     </CartContext.Provider>
   );
 };
-
-/* =======================
-   Hook
-======================= */
 
 export const useCart = () => {
   const context = useContext(CartContext);

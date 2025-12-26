@@ -1,122 +1,113 @@
 "use client";
-
-import { GlobeIcon, LayersIcon, Users, Menu as MenuIcon, X as XIcon } from "lucide-react";
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
-import { usePathname } from "next/navigation";
-import Logo from "./Logo";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Logo from "./Logo";
+import { CartIcon } from "./CartIcon";
+import { Button } from "@/components/ui/button";
+import { Menu as MenuIcon, X as XIcon, Check } from "lucide-react";
+import { useCart } from "@/context/CartContext"; // حتما CartProvider دور اپلیکیشن باشه
 
-export const productLinks = [
-  { title: "محصولات نرم افزاری", href: "/Software", description: "مشاهده لیست محصولات نرم افزاری", icon: GlobeIcon },
-  { title: "محصولات سخت افزاری", href: "/Products", description: "مشاهده لیست محصولات سخت افزاری", icon: LayersIcon },
-  { title: "استعلام قیمت", href: "/Calculator", description: "محاسبه قیمت", icon: LayersIcon },
-];
+export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-export const companyLinks = [
-  { title: "درباره ما", href: "/about", description: "درباره داستان و تیم ما", icon: Users },
-  { title: "مقالات", href: "/blogpage", description: "مطالب آموزشی", icon: Users },
-];
+  const { cart } = useCart(); // گرفتن سبد خرید
 
-const sections = [
-  { title: "محصولات", list: productLinks },
-  { title: "رهان", list: companyLinks },
-];
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
-function DesktopMenu() {
-  const pathname = usePathname();
   const navItems = [
     { title: "صفحه اصلی", href: "/" },
     { title: "محصولات نرم افزاری", href: "/Software" },
     { title: "محصولات سخت افزاری", href: "/Products" },
     { title: "درباره ما", href: "/about" },
-    { title: "مقالات", href: "/blogpage" },
-    { title: "قیمت‌ها", href: "/Calculator" },
+    { title: "مقالات", href: "/blogpage" }, 
     { title: "تماس با ما", href: "/callus" },
   ];
 
+  // تعداد کل آیتم‌ها
+  const totalItems = cart.modules.reduce((acc, m) => acc + m.qty, 0);
+
   return (
-    <nav className="hidden lg:flex items-center gap-6">
-      {navItems.map((item) => {
-        const isActive = pathname === item.href;
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`relative px-4 py-2 text-sm font-medium transition-colors ${
-              isActive ? "text-[#4f89c9]" : "text-muted-foreground hover:text-[#4f89c9]"
-            }`}
-          >
-            {item.title}
-            {isActive && (
-              <span className="absolute left-0 -bottom-1 h-0.5 w-full bg-[#4f89c9] rounded-full" />
+    <header
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        scrolled ? "bg-[#4f89c9] shadow-md py-3" : "bg-transparent py-6"
+      }`}
+    >
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
+        {/* لوگو */}
+        <div className={`transition-all duration-500 ${scrolled ? "scale-90" : "scale-100"}`}>
+          <Logo color={scrolled ? "white" : "#4f89c9"} />
+        </div>
+
+        {/* منوی دسکتاپ */}
+        <nav className="hidden lg:flex items-center gap-6">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`transition-colors duration-300 font-medium text-sm ${
+                scrolled ? "text-white hover:text-white/80" : "text-[#4f89c9] hover:text-[#4f89c9]/80"
+              }`}
+            >
+              {item.title}
+            </Link>
+          ))}
+        </nav>
+
+        {/* آیکون‌ها */}
+        <div className="flex items-center gap-4 relative">
+          <Link href="/CartPage" className="relative">
+            <CartIcon
+              className={`transition-colors duration-300 ${scrolled ? "text-white" : "text-[#4f89c9]"}`}
+            />
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                {totalItems}
+              </span>
             )}
           </Link>
-        );
-      })}
-    </nav>
-  );
-}
 
-function MobileNav() {
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button size="icon" variant="ghost" className="lg:hidden">
-          <MenuIcon className="h-6 w-6" />
-        </Button>
-      </SheetTrigger>
-
-      <SheetContent side="right" className="w-full p-0 bg-background" dir="rtl">
-        <div className="flex h-14 items-center justify-between border-b px-4">
-          <span className="font-bold">منو</span>
-          <SheetClose asChild>
-            <Button size="icon" variant="ghost">
-              <XIcon className="h-5 w-5" />
-            </Button>
-          </SheetClose>
-        </div>
-
-        <div className="overflow-y-auto px-4 py-6 space-y-8">
-          {sections.map((section) => (
-            <div key={section.title} className="space-y-3">
-              <h3 className="text-sm font-semibold text-muted-foreground">{section.title}</h3>
-              <ul className="space-y-2">
-                {section.list.map((link) => (
-                  <li key={link.href}>
-                    <SheetClose asChild>
-                      <Link href={link.href} className="flex items-center gap-3 rounded-2xl px-4 py-4 text-base font-medium hover:bg-muted transition">
-                        {link.icon && <link.icon className="h-5 w-5 text-[#4f89c9]" />}
-                        <span>{link.title}</span>
-                      </Link>
-                    </SheetClose>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </SheetContent>
-    </Sheet>
-  );
-}
-
-export default function NavigationMenuDemo() {
-  return (
-    <div className="relative w-full bg-accent px-4 py-4 lg:px-12">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between">
-        <div className="flex items-center gap-8">
-          <Logo />
-          <DesktopMenu />
-        </div>
-
-        <div className="flex items-center gap-4">
-          <Button asChild className="text-sm">
-            <a href="/checkout">دمو رایگان</a>
+          <Button
+            variant="ghost"
+            className={`transition-colors duration-300 ${
+              scrolled ? "text-white border-white" : "text-[#4f89c9] border-[#4f89c9]"
+            }`}
+          >
+            دمو رایگان
           </Button>
-          <MobileNav />
+
+          {/* موبایل */}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className={`lg:hidden transition-colors duration-300 ${scrolled ? "text-white" : "text-[#4f89c9]"}`}
+          >
+            {mobileOpen ? <XIcon /> : <MenuIcon />}
+          </button>
         </div>
       </div>
-    </div>
+
+      {/* منوی موبایل */}
+      {mobileOpen && (
+        <div className="lg:hidden bg-[#4f89c9] text-white w-full py-4 px-6 transition-all duration-300">
+          <ul className="flex flex-col gap-3">
+            {navItems.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="block py-2 px-4 rounded hover:bg-[#3b6cb3]"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {item.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </header>
   );
 }

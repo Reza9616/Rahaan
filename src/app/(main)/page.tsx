@@ -11,8 +11,8 @@ import WorkProcess from "./components/WorkProcess";
 export default function Home() {
   return (
   <>
-    <main>
-      <Hero />
+    <main className="bg-accent"> 
+      <Hero /> 
       <WorkProcess /> 
       <Banner2 />
       <Service />

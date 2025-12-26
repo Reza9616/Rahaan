@@ -10,7 +10,6 @@ export default function MainLayout({
   return (
     <>
      <CartProvider>
-      <Shape />
       <NavigationMenuDemo />
       {children}
       <Analytics />
