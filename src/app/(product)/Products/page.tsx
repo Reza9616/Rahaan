@@ -5,7 +5,6 @@ import { Footer } from "@/components/Footer";
 import { useEffect, useState } from "react";
 import { Search, ShoppingCart, Filter, Check, Building2, Sparkles, LayoutGrid } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart, Module } from "@/context/CartContext";
 
@@ -47,21 +46,6 @@ export default function ProductsPage() {
   const [tag, setTag] = useState<number | null>(null);
   const [selectedLevel, setSelectedLevel] = useState("all");
 
-  const addModuleToCart = (product: Product) => {
-    const module: Module = { name: product.KalaName, price: product.Price, qty: 1 };
-    setCart(prev => {
-      const existing = prev.modules.find(m => m.name === module.name);
-      let updatedModules;
-      if (existing) {
-        updatedModules = prev.modules.map(m =>
-          m.name === module.name ? { ...m, qty: m.qty + 1 } : m
-        );
-      } else {
-        updatedModules = [...prev.modules, module];
-      }
-      return { ...prev, modules: updatedModules };
-    });
-  };
 
   useEffect(() => {
     setLoading(true);

@@ -48,21 +48,6 @@ export default function ProductsPage() {
 
   const { cart, setCart } = useCart(); // اتصال به سبد خرید
 
-  const addModuleToCart = (product: Product) => {
-    const module: Module = { name: product.KalaName, price: product.Price, qty: 1 };
-    setCart(prev => {
-      const existing = prev.modules.find(m => m.name === module.name);
-      let updatedModules;
-      if (existing) {
-        updatedModules = prev.modules.map(m =>
-          m.name === module.name ? { ...m, qty: m.qty + 1 } : m
-        );
-      } else {
-        updatedModules = [...prev.modules, module];
-      }
-      return { ...prev, modules: updatedModules };
-    });
-  };
 
   useEffect(() => {
     setLoading(true);
