@@ -40,7 +40,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6">
         {/* لوگو */}
         <div className={`transition-all duration-500 ${scrolled ? "scale-90" : "scale-100"}`}>
-          <Logo color={scrolled ? "white" : "#4f89c9"} />
+          رهان
         </div>
 
         {/* منوی دسکتاپ */}
