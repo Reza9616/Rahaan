@@ -7,7 +7,6 @@ import { Search, ShoppingCart, Filter, Check, Building2, Sparkles, LayoutGrid } 
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { useCart, Module } from "@/context/CartContext";
-
 interface Product {
   KalaPuID: number;
   KalaName: string;
@@ -16,6 +15,8 @@ interface Product {
   KalaGroup: number;
   Price: number;
 }
+
+
 
 const PRODUCT_TYPES = [
   { id: 1, label: "سازمانی" },
@@ -46,21 +47,23 @@ export default function ProductsPage() {
   const [tag, setTag] = useState<number | null>(null);
   const [selectedLevel, setSelectedLevel] = useState("all");
 
-  const addModuleToCart = (product: Product) => {
-    const cartModule: Module = { name: product.KalaName, price: product.Price, qty: 1 };
-    setCart(prev => {
-      const existing = prev.modules.find(m => m.name === cartModule.name);
-      let updatedModules;
-      if (existing) {
-        updatedModules = prev.modules.map(m =>
-          m.name === cartModule.name ? { ...m, qty: m.qty + 1 } : m
-        );
-      } else {
-        updatedModules = [...prev.modules, cartModule];
-      }
-      return { ...prev, modules: updatedModules };
-    });
+ const addModuleToCart = (product: Product) => {
+  const cartModule: Module = {
+    name: product.KalaName,
+    price: product.Price,
+    qty: 1,
+    puid: product.KalaPuID, // ✅ اصلاح شد
   };
+
+  setCart(prev => {
+    const existing = prev.modules.find(m => m.name === cartModule.name);
+    const updatedModules = existing
+      ? prev.modules.map(m => m.name === cartModule.name ? { ...m, qty: m.qty + 1 } : m)
+      : [...prev.modules, cartModule];
+
+    return { ...prev, modules: updatedModules };
+  });
+};
   useEffect(() => {
     setLoading(true);
     const params = new URLSearchParams();

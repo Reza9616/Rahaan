@@ -3,7 +3,7 @@
 import NavigationMenuDemo from "@/components/navbar";
 import { Footer } from "@/components/Footer";
 import { Trash2, Minus, Plus, CreditCard, ShoppingCart, Package, Sparkles, ArrowLeft, CheckCircle } from "lucide-react";
-import { useCart } from "@/context/CartContext";
+import { useCart, Module, Feature } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -41,7 +41,8 @@ export default function CartPage() {
     cart.modules.reduce((sum, m) => sum + m.price * m.qty, 0) +
     cart.features.reduce((sum, f) => sum + f.price * f.count, 0);
 
-  const totalItems = cart.modules.reduce((sum, m) => sum + m.qty, 0) + 
+  const totalItems = 
+    cart.modules.reduce((sum, m) => sum + m.qty, 0) + 
     cart.features.reduce((sum, f) => sum + f.count, 0);
 
   const allItems = [
@@ -49,21 +50,61 @@ export default function CartPage() {
     ...cart.features.map(f => ({ ...f, type: "feature" as const, quantity: f.count }))
   ];
 
-  const handleCheckout = async () => {
-    setIsCheckingOut(true);
-    try {
-      const res = await fetch("/api/me", { credentials: "include" });
-      if (!res.ok || !(await res.json()).authenticated) {
-        router.push("/login");
+  const payload = {
+    customer: {
+      type: "person",
+      fullName: "رضایا",
+      familyName: "—",
+      phone: "09120000000",
+    },
+    userPuid: 1,
+    sellerPuid: 1,
+    anbarPuid: 1,
+    totalPrice: total,
+    description: "ثبت سفارش از سبد خرید",
+    items: allItems.map(item => {
+      if (item.type === "module") {
+        return {
+          kalaPuid: item.puid,
+          vahedPuid: 1,
+          qty: item.quantity,
+          price: item.price,
+          offType: 0,
+          offValue: 0,
+          tax: 0,
+        };
       } else {
-        router.push("/checkout");
+        return {
+          kalaPuid: 0,
+          vahedPuid: 1,
+          qty: item.quantity,
+          price: item.price,
+          offType: 0,
+          offValue: 0,
+          tax: 0,
+        };
       }
-    } catch {
-      router.push("/login");
-    } finally {
-      setIsCheckingOut(false);
-    }
+    })
   };
+
+const handleCheckout = async () => {
+  setIsCheckingOut(true);
+  try {
+    const res = await fetch("/api/me", { credentials: "include" });
+    const authData = await res.json();
+
+    if (!res.ok || !authData.authenticated) {
+      router.push("/login");
+    } else {
+      router.push("/checkout"); // ✅ کاربر لاگین است، هدایت به Checkout
+    }
+  } catch (error) {
+    console.error(error);
+    router.push("/login"); // در صورت خطا به لاگین برود
+  } finally {
+    setIsCheckingOut(false);
+  }
+};
 
   return (
     <>
@@ -82,11 +123,11 @@ export default function CartPage() {
               transition={{ duration: 0.6 }}
             >
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#4f89c9]  mt-20 to-indigo-600 flex items-center justify-center shadow-lg">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#4f89c9] to-indigo-600 flex items-center justify-center shadow-lg">
                   <ShoppingCart className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl md:text-4xl font-black text-[#4f89c9] mt-25">سبد خرید شما</h1>
+                  <h1 className="text-3xl md:text-4xl font-black text-[#4f89c9]">سبد خرید شما</h1>
                   <p className="text-slate-500 mt-1">{totalItems} محصول در سبد خرید</p>
                 </div>
               </div>
@@ -105,14 +146,8 @@ export default function CartPage() {
             >
               <div className="max-w-md mx-auto">
                 <motion.div
-                  animate={{ 
-                    y: [0, -10, 0],
-                  }}
-                  transition={{ 
-                    repeat: Infinity,
-                    duration: 2,
-                    ease: "easeInOut"
-                  }}
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
                   className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center shadow-inner"
                 >
                   <ShoppingCart className="w-16 h-16 text-slate-300" />
@@ -144,15 +179,10 @@ export default function CartPage() {
                       className="relative"
                     >
                       <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white hover:shadow-2xl transition-all duration-300 group">
-                        {/* گوشه درخشان */}
                         <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#4f89c9]/20 to-transparent rounded-3xl pointer-events-none" />
                         
                         <div className="flex flex-col sm:flex-row items-start gap-6 relative">
-                          {/* تصویر محصول */}
-                          <motion.div 
-                            whileHover={{ scale: 1.05, rotate: 2 }}
-                            className="relative flex-shrink-0"
-                          >
+                          <motion.div whileHover={{ scale: 1.05, rotate: 2 }} className="relative flex-shrink-0">
                             <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-[#4f89c9]/10 to-indigo-500/10 flex items-center justify-center shadow-lg">
                               <Package className="w-12 h-12 text-[#4f89c9]" />
                             </div>
@@ -161,7 +191,6 @@ export default function CartPage() {
                             </div>
                           </motion.div>
 
-                          {/* اطلاعات و کنترل‌ها */}
                           <div className="flex-1 w-full">
                             <div className="flex items-start justify-between gap-4 mb-4">
                               <div>
@@ -173,7 +202,6 @@ export default function CartPage() {
                                 </p>
                               </div>
                               
-                              {/* دکمه حذف */}
                               <motion.button
                                 whileHover={{ scale: 1.1, rotate: 5 }}
                                 whileTap={{ scale: 0.9 }}
@@ -184,7 +212,6 @@ export default function CartPage() {
                               </motion.button>
                             </div>
 
-                            {/* کنترل تعداد و جمع */}
                             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                               <div className="flex items-center gap-1 bg-slate-100 rounded-2xl p-1 shadow-inner">
                                 <motion.button
@@ -215,7 +242,6 @@ export default function CartPage() {
                                 </motion.button>
                               </div>
 
-                              {/* جمع قیمت */}
                               <div className="flex-1 sm:text-left">
                                 <p className="text-xs text-slate-500 mb-1">جمع کل</p>
                                 <motion.p 
@@ -235,13 +261,8 @@ export default function CartPage() {
                   ))}
                 </AnimatePresence>
 
-                {/* دکمه پاک کردن همه */}
                 {totalItems > 0 && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                  >
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
                     <button
                       onClick={clearCart}
                       className="w-full sm:w-auto px-8 py-4 border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 rounded-2xl font-bold transition-all flex items-center justify-center gap-2"
@@ -254,12 +275,7 @@ export default function CartPage() {
               </div>
 
               {/* خلاصه سفارش - Sticky */}
-              <motion.aside
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="lg:sticky lg:top-8 h-fit"
-              >
+              <motion.aside initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="lg:sticky lg:top-8 h-fit">
                 <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#4f89c9] to-indigo-600 flex items-center justify-center shadow-lg">
@@ -282,12 +298,7 @@ export default function CartPage() {
                     <div className="flex items-center justify-between py-6 bg-gradient-to-r from-[#4f89c9]/10 to-indigo-600/10 rounded-2xl px-6">
                       <span className="text-lg font-bold text-slate-800">جمع کل</span>
                       <div className="text-left">
-                        <motion.p 
-                          key={total}
-                          initial={{ scale: 1.2, color: "#4f89c9" }}
-                          animate={{ scale: 1, color: "#4f89c9" }}
-                          className="text-3xl font-black"
-                        >
+                        <motion.p key={total} initial={{ scale: 1.2, color: "#4f89c9" }} animate={{ scale: 1, color: "#4f89c9" }} className="text-3xl font-black">
                           {total.toLocaleString()}
                         </motion.p>
                         <p className="text-sm text-slate-500">تومان</p>
@@ -303,10 +314,7 @@ export default function CartPage() {
                     className="w-full py-6 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white text-lg font-bold shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 relative overflow-hidden group disabled:opacity-50"
                   >
                     {isCheckingOut ? (
-                      <>
-                        <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin" />
-                        در حال بررسی...
-                      </>
+                      <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
                         <CreditCard className="w-6 h-6" />
@@ -316,7 +324,6 @@ export default function CartPage() {
                     )}
                   </motion.button>
 
-                  {/* امنیت پرداخت */}
                   <div className="mt-6 flex items-center justify-center gap-2 text-sm text-slate-500">
                     <CheckCircle className="w-4 h-4 text-green-600" />
                     <span>پرداخت امن و مطمئن</span>
@@ -331,32 +338,16 @@ export default function CartPage() {
       {/* Bottom Bar موبایل */}
       <AnimatePresence>
         {totalItems > 0 && (
-          <motion.div
-            initial={{ y: 100 }}
-            animate={{ y: 0 }}
-            exit={{ y: 100 }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-xl border-t-2 border-slate-200 shadow-2xl p-5 z-50"
-          >
+          <motion.div initial={{ y: 100 }} animate={{ y: 0 }} exit={{ y: 100 }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-xl border-t-2 border-slate-200 shadow-2xl p-5 z-50">
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1">
                 <div className="text-sm text-slate-500 mb-1">مجموع سفارش</div>
-                <motion.div 
-                  key={total}
-                  initial={{ scale: 1.2 }}
-                  animate={{ scale: 1 }}
-                  className="text-2xl font-black text-[#4f89c9]"
-                >
+                <motion.div key={total} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-2xl font-black text-[#4f89c9]">
                   {total.toLocaleString()} تومان
                 </motion.div>
               </div>
               
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={handleCheckout}
-                disabled={isCheckingOut}
-                className="px-8 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-lg flex items-center gap-2 shadow-xl active:shadow-lg transition-all disabled:opacity-50"
-              >
+              <motion.button whileTap={{ scale: 0.95 }} onClick={handleCheckout} disabled={isCheckingOut} className="px-8 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-lg flex items-center gap-2 shadow-xl active:shadow-lg transition-all disabled:opacity-50">
                 {isCheckingOut ? (
                   <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin" />
                 ) : (

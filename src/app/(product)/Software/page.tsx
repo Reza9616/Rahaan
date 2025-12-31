@@ -47,21 +47,27 @@ export default function ProductsPage() {
 
   const { setCart } = useCart(); // اتصال به سبد خرید
 
-  const addModuleToCart = (product: Product) => {
-    const cartModule: Module = { name: product.KalaName, price: product.Price, qty: 1 };
-    setCart(prev => {
-      const existing = prev.modules.find(m => m.name === cartModule.name);
-      let updatedModules;
-      if (existing) {
-        updatedModules = prev.modules.map(m =>
-          m.name === cartModule.name ? { ...m, qty: m.qty + 1 } : m
-        );
-      } else {
-        updatedModules = [...prev.modules, cartModule];
-      }
-      return { ...prev, modules: updatedModules };
-    });
+ const addModuleToCart = (product: Product) => {
+  const cartModule: Module = {
+    name: product.KalaName,
+    price: product.Price,
+    qty: 1,
+    puid: product.KalaPuID, // ✅ اصلاح شد
   };
+
+  setCart(prev => {
+    const existing = prev.modules.find(m => m.name === cartModule.name);
+    let updatedModules;
+    if (existing) {
+      updatedModules = prev.modules.map(m =>
+        m.name === cartModule.name ? { ...m, qty: m.qty + 1 } : m
+      );
+    } else {
+      updatedModules = [...prev.modules, cartModule];
+    }
+    return { ...prev, modules: updatedModules };
+  });
+};
 
   useEffect(() => {
     setLoading(true);

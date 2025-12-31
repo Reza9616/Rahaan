@@ -1,175 +1,215 @@
-'use client'
+'use client';
 
-import Image from 'next/image'
-import { motion, type Variants, useScroll, useTransform } from 'framer-motion'
-import { useRef } from 'react'
-import WordRotateDemo from '@/components/WordRotate'
-import { Button } from '@/components/ui/button'
+import { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import type { ReactNode } from 'react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  TrendingUp,
+  Shield,
+  Zap,
+  Users,
+  Globe2,
+  ArrowLeft,
+  Check,
+  Sparkles,
+  Building2,
+  Store,
+  Package,
+} from 'lucide-react';
 
-const textContainer: Variants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.18, delayChildren: 0.2 },
-  },
+/* ---------------- Floating Card ---------------- */
+
+type FloatingCardProps = {
+  children: ReactNode;
+  delay?: number;
+  direction?: 'up' | 'down';
+};
+
+function FloatingCard({
+  children,
+  delay = 0,
+  direction = 'up',
+}: FloatingCardProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: direction === 'up' ? 100 : -100, rotateX: 10 }}
+      whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+      viewport={{ once: false, margin: '-100px' }}
+      transition={{
+        duration: 1,
+        delay,
+        type: 'spring',
+        stiffness: 50,
+      }}
+      whileHover={{
+        y: -20,
+        rotateY: 5,
+        scale: 1.05,
+        transition: { duration: 0.3 },
+      }}
+      className="transform-gpu"
+      style={{ perspective: '1000px' }}
+    >
+      {children}
+    </motion.div>
+  );
 }
 
-const textItem: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 90, damping: 14 } },
+/* ---------------- Globe 3D ---------------- */
+
+function Globe3D() {
+  return (
+    <motion.div
+      animate={{ rotateY: [0, 360] }}
+      transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+      className="relative w-64 h-64 mx-auto"
+      style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-cyan-600 rounded-full opacity-80 blur-2xl" />
+      <motion.div
+        animate={{ scale: [1, 1.1, 1] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute inset-4 bg-gradient-to-br from-[#4f89c9] to-cyan-500 rounded-full shadow-2xl"
+      >
+        <Globe2 className="absolute inset-0 m-auto w-32 h-32 text-white/40" />
+      </motion.div>
+    </motion.div>
+  );
 }
+
+/* ---------------- Hero ---------------- */
 
 export default function Hero() {
-  const sectionRef = useRef<HTMLElement | null>(null)
-  const imageRef = useRef<HTMLDivElement | null>(null)
+  const heroRef = useRef<HTMLDivElement | null>(null);
 
-  /* ===== Scroll Parallax for Image ===== */
-  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ['start end', 'end start'] })
-  const imgY = useTransform(scrollYProgress, [0, 1], [20, -20])
-  const imgScale = useTransform(scrollYProgress, [0, 1], [1, 1.03])
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ['start start', 'end start'],
+  });
 
-  /* ===== Mouse Tilt ===== */
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = imageRef.current
-    if (!card) return
-    const rect = card.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
-    const rotateX = ((y - centerY) / centerY) * 6
-    const rotateY = ((x - centerX) / centerX) * -6
-    card.style.transform = `perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`
-  }
-
-  const handleMouseLeave = () => {
-    const card = imageRef.current
-    if (!card) return
-    card.style.transform = `perspective(1200px) rotateX(0deg) rotateY(0deg) scale(1)`
-  }
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
     <section
-      ref={sectionRef}
-      className="mt-25 min-h-[85vh] bg-gradient-to-br from-blue-50 via-indigo-50/30 to-purple-50/20 relative overflow-hidden"
+      ref={heroRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
-      {/* Background Shapes */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <motion.div 
-          animate={{ x: [0, 30, 0], y: [0, -40, 0], rotate: [0, 45, 0], scale: [1, 1.1, 1] }}
-          transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 right-10 w-96 h-96 bg-gradient-to-br from-sky-400/20 to-blue-500/20 rounded-full blur-3xl"
+      {/* Background blobs */}
+      <div className="absolute inset-0">
+        <motion.div
+          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-br from-blue-500/30 to-cyan-500/30 rounded-full blur-3xl"
         />
-        <motion.div 
-          animate={{ x: [0, -50, 0], y: [0, 60, 0], rotate: [0, -90, 0], scale: [1, 1.2, 1] }}
-          transition={{ duration: 25, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-32 left-20 w-[500px] h-[500px] bg-gradient-to-tl from-blue-400/15 to-cyan-500/15 rounded-full blur-3xl"
-        />
-        <motion.div 
-          animate={{ rotate: [0, 360], scale: [1, 1.15, 1] }}
-          transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-r from-cyan-400/10 via-blue-500/10 to-sky-600/10 rounded-full blur-3xl"
+        <motion.div
+          animate={{ scale: [1, 1.3, 1], rotate: [0, -90, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
+          className="absolute bottom-20 left-20 w-[500px] h-[500px] bg-gradient-to-tl from-cyan-500/30 to-blue-500/30 rounded-full blur-3xl"
         />
       </div>
 
-      <div className="container mx-auto px-6 py-12 lg:py-20 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
+      <motion.div
+        style={{ y: heroY, opacity: heroOpacity }}
+        className="relative z-10 max-w-7xl mx-auto px-6 py-20 text-center"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-cyan-300 mb-8"
+        >
+          <Sparkles className="w-5 h-5" />
+          نسل جدید نرم‌افزار حسابداری
+        </motion.div>
 
-          {/* ================== Text ================== */}
-          <motion.div
-            variants={textContainer}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: false, amount: 0.2 }}
-            className="space-y-8 text-right"
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="text-6xl md:text-8xl font-black text-white mb-6"
+        >
+          <span className="bg-gradient-to-l from-cyan-400 via-[#4f89c9] to-cyan-400 bg-clip-text text-transparent">
+            رهان
+          </span>
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="text-xl md:text-2xl text-cyan-100 max-w-3xl mx-auto mb-12"
+        >
+          حسابداری اما آسان
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.7, duration: 0.5 }}
+          className="mb-20"
+        >
+          <Button
+            size="lg"
+            className="bg-gradient-to-r from-cyan-500 to-[#4f89c9] text-white px-12 py-6 text-lg rounded-full shadow-2xl shadow-cyan-500/50"
           >
-            <motion.h1
-              variants={textItem}
-              className="text-4xl lg:text-6xl font-light leading-tight text-primary/80"
-            >
-              <strong className="font-semibold text-primary">رهان</strong>، <br />
-              حسابداری اما <WordRotateDemo />
-            </motion.h1>
+           <a href="/callus">شروع کنید</a> 
+            <ArrowLeft className="w-5 h-5 mr-2" />
+          </Button>
+        </motion.div>
 
-            <motion.p
-              variants={textItem}
-              className="text-muted-foreground max-w-lg text-base lg:text-lg leading-relaxed"
-            >
-              در <strong>داده پرداز آتی الگوریتم</strong>، <strong>رهان</strong> راهکارهایی ساده و دقیق برای هر کسب‌وکار ارائه می‌دهد؛ از ERP سازمانی تا نرم‌افزارهای فروشگاهی، ابزارهایی که مدیریت مالی و تصمیم‌گیری‌های روزانه‌ی شما را هوشمندانه‌تر و مؤثرتر می‌کنند.
-            </motion.p>
+        {/* Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <FloatingCard delay={0.2}>
+            <Card icon={TrendingUp} title="رشد سریع" />
+          </FloatingCard>
 
-            <motion.div variants={textItem} initial={false}>
-              <Button asChild size="lg" className="px-8 py-6 text-lg">
-                <a href="/callus">تماس با ما</a>
-              </Button>
-            </motion.div>
-          </motion.div>
+          <FloatingCard delay={0.4} direction="down">
+            <Card icon={Shield} title="امنیت کامل" />
+          </FloatingCard>
 
-          {/* ================== Image ================== */}
-          <motion.div
-            style={{ y: imgY, scale: imgScale }}
-            initial={{ opacity: 0, x: -120 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 1, ease: 'easeOut' }}
-            className="flex justify-center"
-          >
-            <div
-              ref={imageRef}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-              className="relative w-full max-w-3xl transition-transform duration-300 ease-out"
-            >
-              {/* Animated Gradient Orbs */}
-              <motion.div
-                animate={{ rotate: [0, 360], scale: [1, 1.2, 1] }}
-                transition={{ repeat: Infinity, duration: 15, ease: 'easeInOut' }}
-                className="absolute -top-10 -right-10 w-40 h-40 bg-gradient-to-br from-sky-400/40 to-cyan-500/40 rounded-full blur-2xl"
-              />
-              <motion.div
-                animate={{ rotate: [360, 0], scale: [1, 1.15, 1], x: [0, 20, 0] }}
-                transition={{ repeat: Infinity, duration: 18, ease: 'easeInOut', delay: 1 }}
-                className="absolute -bottom-10 -left-10 w-48 h-48 bg-gradient-to-tr from-blue-400/40 to-teal-500/40 rounded-full blur-2xl"
-              />
-              <motion.div
-                animate={{ y: [0, -30, 0], opacity: [0.3, 0.6, 0.3] }}
-                transition={{ repeat: Infinity, duration: 10, ease: 'easeInOut', delay: 0.5 }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-cyan-400/30 to-blue-500/30 rounded-full blur-3xl -z-10"
-              />
-
-              {/* Floating Dots */}
-              <motion.div
-                animate={{ y: [0, -15, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-10 right-10 w-3 h-3 bg-blue-500 rounded-full"
-              />
-              <motion.div
-                animate={{ y: [0, 20, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                className="absolute bottom-20 left-10 w-4 h-4 bg-cyan-500 rounded-full"
-              />
-              <motion.div
-                animate={{ y: [0, -10, 0], x: [0, 10, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-                className="absolute top-1/2 right-5 w-2 h-2 bg-cyan-500 rounded-full"
-              />
-
-              {/* Main Image */}
-              <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.4 }}>
-                <Image
-                  src="/header2.jpg"
-                  alt="رهان - نرم‌افزار حسابداری هوشمند"
-                  width={1250}
-                  height={1000}
-                  priority
-                  className="w-full h-auto object-contain rounded-[3rem]"
-                />
-              </motion.div>
-            </div>
-          </motion.div>
-
+          <FloatingCard delay={0.6}>
+            <Card icon={Zap} title="سرعت بالا" />
+          </FloatingCard>
         </div>
-      </div>
+
+        {/* Globe */}
+       <div className="mt-24 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-lg mx-auto">
+  <div className="rounded-xl border border-white/10 bg-white/5 p-6">
+    <div className="text-3xl font-bold text-white">1000+</div>
+    <div className="text-sm text-cyan-200 mt-1">مشتری فعال سازمانی</div>
+  </div>
+
+  <div className="rounded-xl border border-white/10 bg-white/5 p-6">
+    <div className="text-3xl font-bold text-white">99.9%</div>
+    <div className="text-sm text-cyan-200 mt-1">پایداری سیستم</div>
+  </div>
+</div>
+      </motion.div>
     </section>
-  )
+  );
+}
+
+/* ---------------- Small Card ---------------- */
+
+function Card({
+  icon: Icon,
+  title,
+}: {
+  icon: React.ElementType;
+  title: string;
+}) {
+  return (
+    <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 shadow-2xl">
+      <div className="w-16 h-16 bg-gradient-to-br from-cyan-400 to-[#4f89c9] rounded-2xl flex items-center justify-center mb-6">
+        <Icon className="w-8 h-8 text-white" />
+      </div>
+      <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-cyan-100">
+        کسب‌وکار خود را با ابزارهای هوشمند توسعه دهید
+      </p>
+    </div>
+  );
 }

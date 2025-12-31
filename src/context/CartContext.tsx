@@ -5,6 +5,7 @@ export interface Module {
   name: string;
   price: number;
   qty: number;
+  puid: number; 
 }
 
 export interface Feature {

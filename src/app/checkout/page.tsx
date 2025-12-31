@@ -96,7 +96,7 @@ const handleSubmit = async () => {
     <>
       <NavigationMenuDemo />
 
-      <main className="max-w-3xl mx-auto px-4 py-12">
+      <main className="max-w-3xl mx-auto px-4 py-12 mt-25">
         <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
           تکمیل اطلاعات مشتری
         </h1>

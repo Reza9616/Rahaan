@@ -49,7 +49,7 @@ export default function WorkProcess() {
   }
 
   return (
-    <section className="py-16 bg-accent">
+    <section className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-6 text-center">
         <h2 className="text-3xl font-bold text-[#1e3a8a] mb-12">
           فرآیند کاری اثبات‌شده رهان
