@@ -196,7 +196,7 @@ className="rounded-2xl border bg-background p-6 shadow-sm hover:shadow-md transi
           <td className="px-4 py-2 text-red-600 font-bold">✖</td>
         </tr>
         <tr>
-          <td className="px-4 py-2">با اسکول</td>
+          <td className="px-4 py-2">باسکول</td>
           <td className="px-4 py-2 text-green-600 font-bold">✔</td>
           <td className="px-4 py-2 text-red-600 font-bold">✖</td>
           <td className="px-4 py-2 text-red-600 font-bold">✖</td>
@@ -268,7 +268,7 @@ className="rounded-2xl border bg-background p-6 shadow-sm hover:shadow-md transi
         </p>
     <button className="bg-white text-[#4f89c9]  px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition">
          <a
-  href="/Calculator"
+  href="/callus"
   className="bg-white text-[#4f89c9] px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition inline-block text-center"
 >
   استعلام قیمت  

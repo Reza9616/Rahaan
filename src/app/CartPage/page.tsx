@@ -2,8 +2,17 @@
 
 import NavigationMenuDemo from "@/components/navbar";
 import { Footer } from "@/components/Footer";
-import { Trash2, Minus, Plus, CreditCard, ShoppingCart, Package, Sparkles, ArrowLeft, CheckCircle } from "lucide-react";
-import { useCart, Module, Feature } from "@/context/CartContext";
+import {
+  Trash2,
+  Minus,
+  Plus,
+  CreditCard,
+  ShoppingCart,
+  Package,
+  Sparkles,
+  CheckCircle,
+} from "lucide-react";
+import { useCart } from "@/context/CartContext";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -14,22 +23,28 @@ export default function CartPage() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const removeItem = (name: string, type: "module" | "feature") => {
-    setCart(prev => ({
+    setCart((prev) => ({
       ...prev,
-      modules: type === "module" ? prev.modules.filter(m => m.name !== name) : prev.modules,
-      features: type === "feature" ? prev.features.filter(f => f.name !== name) : prev.features,
+      modules:
+        type === "module"
+          ? prev.modules.filter((m) => m.name !== name)
+          : prev.modules,
+      features:
+        type === "feature"
+          ? prev.features.filter((f) => f.name !== name)
+          : prev.features,
     }));
   };
 
   const changeQty = (name: string, delta: number, type: "module" | "feature") => {
-    setCart(prev => {
+    setCart((prev) => {
       const updated = { ...prev };
       if (type === "module") {
-        updated.modules = updated.modules.map(m => 
+        updated.modules = updated.modules.map((m) =>
           m.name === name ? { ...m, qty: Math.max(1, m.qty + delta) } : m
         );
       } else {
-        updated.features = updated.features.map(f => 
+        updated.features = updated.features.map((f) =>
           f.name === name ? { ...f, count: Math.max(1, f.count + delta) } : f
         );
       }
@@ -37,85 +52,58 @@ export default function CartPage() {
     });
   };
 
-  const total = 
-    cart.modules.reduce((sum, m) => sum + m.price * m.qty, 0) +
-    cart.features.reduce((sum, f) => sum + f.price * f.count, 0);
+  const total =
+    cart.modules.reduce((s, m) => s + m.price * m.qty, 0) +
+    cart.features.reduce((s, f) => s + f.price * f.count, 0);
 
-  const totalItems = 
-    cart.modules.reduce((sum, m) => sum + m.qty, 0) + 
-    cart.features.reduce((sum, f) => sum + f.count, 0);
+  const totalItems =
+    cart.modules.reduce((s, m) => s + m.qty, 0) +
+    cart.features.reduce((s, f) => s + f.count, 0);
 
   const allItems = [
-    ...cart.modules.map(m => ({ ...m, type: "module" as const, quantity: m.qty })),
-    ...cart.features.map(f => ({ ...f, type: "feature" as const, quantity: f.count }))
+    ...cart.modules.map((m) => ({
+      ...m,
+      type: "module" as const,
+      quantity: m.qty,
+    })),
+    ...cart.features.map((f) => ({
+      ...f,
+      type: "feature" as const,
+      quantity: f.count,
+    })),
   ];
 
-  const payload = {
-    customer: {
-      type: "person",
-      fullName: "رضایا",
-      familyName: "—",
-      phone: "09120000000",
-    },
-    userPuid: 1,
-    sellerPuid: 1,
-    anbarPuid: 1,
-    totalPrice: total,
-    description: "ثبت سفارش از سبد خرید",
-    items: allItems.map(item => {
-      if (item.type === "module") {
-        return {
-          kalaPuid: item.puid,
-          vahedPuid: 1,
-          qty: item.quantity,
-          price: item.price,
-          offType: 0,
-          offValue: 0,
-          tax: 0,
-        };
+  const handleCheckout = async () => {
+    setIsCheckingOut(true);
+    try {
+      const res = await fetch("/api/me", { credentials: "include" });
+      const authData = await res.json();
+
+      if (!res.ok || !authData.authenticated) {
+        router.push("/login");
       } else {
-        return {
-          kalaPuid: 0,
-          vahedPuid: 1,
-          qty: item.quantity,
-          price: item.price,
-          offType: 0,
-          offValue: 0,
-          tax: 0,
-        };
+        router.push("/checkout");
       }
-    })
-  };
-
-const handleCheckout = async () => {
-  setIsCheckingOut(true);
-  try {
-    const res = await fetch("/api/me", { credentials: "include" });
-    const authData = await res.json();
-
-    if (!res.ok || !authData.authenticated) {
+    } catch (err) {
       router.push("/login");
-    } else {
-      router.push("/checkout"); // ✅ کاربر لاگین است، هدایت به Checkout
+    } finally {
+      setIsCheckingOut(false);
     }
-  } catch (error) {
-    console.error(error);
-    router.push("/login"); // در صورت خطا به لاگین برود
-  } finally {
-    setIsCheckingOut(false);
-  }
-};
+  };
 
   return (
     <>
       <NavigationMenuDemo />
 
-      <main className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 pb-32 lg:pb-20" dir="rtl">
-        {/* Header با انیمیشن */}
+      <main
+        className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 pb-32 lg:pb-20"
+        dir="rtl"
+      >
+        {/* Header */}
         <section className="relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-b from-[#4f89c9]/5 to-transparent" />
           <div className="absolute top-10 right-20 w-72 h-72 bg-[#4f89c9]/10 rounded-full blur-3xl animate-pulse" />
-          
+
           <div className="max-w-7xl mx-auto px-4 md:px-6 pt-16 pb-8 relative">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -127,7 +115,9 @@ const handleCheckout = async () => {
                   <ShoppingCart className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl md:text-4xl font-black text-[#4f89c9]">سبد خرید شما</h1>
+                  <h1 className="text-3xl md:text-4xl font-black text-[#4f89c9]">
+                    سبد خرید شما
+                  </h1>
                   <p className="text-slate-500 mt-1">{totalItems} محصول در سبد خرید</p>
                 </div>
               </div>
@@ -135,7 +125,7 @@ const handleCheckout = async () => {
           </div>
         </section>
 
-        {/* محتوای اصلی */}
+        {/* محتوا */}
         <section className="max-w-7xl mx-auto px-4 md:px-6">
           {totalItems === 0 ? (
             <motion.div
@@ -147,13 +137,21 @@ const handleCheckout = async () => {
               <div className="max-w-md mx-auto">
                 <motion.div
                   animate={{ y: [0, -10, 0] }}
-                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 2,
+                    ease: "easeInOut",
+                  }}
                   className="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center shadow-inner"
                 >
                   <ShoppingCart className="w-16 h-16 text-slate-300" />
                 </motion.div>
-                <h2 className="text-3xl font-bold text-slate-800 mb-3">سبد خرید خالی است</h2>
-                <p className="text-slate-500 mb-8 text-lg">محصولی در سبد خرید شما وجود ندارد</p>
+                <h2 className="text-3xl font-bold text-slate-800 mb-3">
+                  سبد خرید خالی است
+                </h2>
+                <p className="text-slate-500 mb-8 text-lg">
+                  محصولی در سبد خرید شما وجود ندارد
+                </p>
                 <button
                   onClick={() => router.push("/")}
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-[#4f89c9] to-indigo-600 text-white px-8 py-4 text-lg rounded-2xl shadow-lg hover:shadow-xl transition-all font-bold"
@@ -180,9 +178,11 @@ const handleCheckout = async () => {
                     >
                       <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-xl border border-white hover:shadow-2xl transition-all duration-300 group">
                         <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#4f89c9]/20 to-transparent rounded-3xl pointer-events-none" />
-                        
                         <div className="flex flex-col sm:flex-row items-start gap-6 relative">
-                          <motion.div whileHover={{ scale: 1.05, rotate: 2 }} className="relative flex-shrink-0">
+                          <motion.div
+                            whileHover={{ scale: 1.05, rotate: 2 }}
+                            className="relative flex-shrink-0"
+                          >
                             <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-[#4f89c9]/10 to-indigo-500/10 flex items-center justify-center shadow-lg">
                               <Package className="w-12 h-12 text-[#4f89c9]" />
                             </div>
@@ -201,7 +201,6 @@ const handleCheckout = async () => {
                                   {item.price.toLocaleString()} تومان
                                 </p>
                               </div>
-                              
                               <motion.button
                                 whileHover={{ scale: 1.1, rotate: 5 }}
                                 whileTap={{ scale: 0.9 }}
@@ -222,8 +221,7 @@ const handleCheckout = async () => {
                                 >
                                   <Minus className="w-4 h-4 text-slate-700" />
                                 </motion.button>
-                                
-                                <motion.span 
+                                <motion.span
                                   key={item.quantity}
                                   initial={{ scale: 1.3, color: "#4f89c9" }}
                                   animate={{ scale: 1, color: "#1e293b" }}
@@ -231,7 +229,6 @@ const handleCheckout = async () => {
                                 >
                                   {item.quantity}
                                 </motion.span>
-                                
                                 <motion.button
                                   whileHover={{ scale: 1.1 }}
                                   whileTap={{ scale: 0.9 }}
@@ -244,7 +241,7 @@ const handleCheckout = async () => {
 
                               <div className="flex-1 sm:text-left">
                                 <p className="text-xs text-slate-500 mb-1">جمع کل</p>
-                                <motion.p 
+                                <motion.p
                                   key={item.price * item.quantity}
                                   initial={{ scale: 1.1 }}
                                   animate={{ scale: 1 }}
@@ -274,7 +271,7 @@ const handleCheckout = async () => {
                 )}
               </div>
 
-              {/* خلاصه سفارش - Sticky */}
+              {/* خلاصه سفارش */}
               <motion.aside initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="lg:sticky lg:top-8 h-fit">
                 <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white">
                   <div className="flex items-center gap-3 mb-6">
@@ -335,33 +332,7 @@ const handleCheckout = async () => {
         </section>
       </main>
 
-      {/* Bottom Bar موبایل */}
-      <AnimatePresence>
-        {totalItems > 0 && (
-          <motion.div initial={{ y: 100 }} animate={{ y: 0 }} exit={{ y: 100 }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="lg:hidden fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-xl border-t-2 border-slate-200 shadow-2xl p-5 z-50">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex-1">
-                <div className="text-sm text-slate-500 mb-1">مجموع سفارش</div>
-                <motion.div key={total} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="text-2xl font-black text-[#4f89c9]">
-                  {total.toLocaleString()} تومان
-                </motion.div>
-              </div>
-              
-              <motion.button whileTap={{ scale: 0.95 }} onClick={handleCheckout} disabled={isCheckingOut} className="px-8 py-4 rounded-2xl bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold text-lg flex items-center gap-2 shadow-xl active:shadow-lg transition-all disabled:opacity-50">
-                {isCheckingOut ? (
-                  <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <>
-                    <CreditCard className="w-5 h-5" />
-                    پرداخت
-                  </>
-                )}
-              </motion.button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
+      {/* Footer */}
       <Footer />
     </>
   );

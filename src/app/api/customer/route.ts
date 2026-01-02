@@ -9,88 +9,106 @@ export async function POST(req: Request) {
 
   try {
     await transaction.begin(sql.ISOLATION_LEVEL.SERIALIZABLE);
+    console.log("Transaction started");
 
-    const request = new sql.Request(transaction);
+    /* ======================
+       CUSTOMER PREPARE
+    ====================== */
+    const type = data.type || "person";
+    const customerType = type === "company" ? 1 : 0;
+    const customerHaghighi = type === "person" ? 1 : 0;
 
-    // ====== Prepare safe values for customer ======
-    const customerType = data.customer?.type === "company" ? 1 : 0;
-    const customerHaghighi = data.customer?.type === "person" ? 1 : 0;
-    const customerName = data.customer?.fullName || data.customer?.companyName || "نام پیش‌فرض";
-    const customerFamily = data.customer?.familyName || null;
-    const customerFather = data.customer?.fatherName || null;
-    const customerPhone = data.customer?.phone || "";
-    const customerAddress = data.customer?.address || null;
-    const customerNationalId = data.customer?.nationalId || null;
-    const customerEconomicCode = data.customer?.economicCode || null;
-    const customerCity = data.customer?.city || null;
-    const customerProvince = data.customer?.province || null;
+    const customerName = type === "person" ? data.fullName : data.companyName;
+    const customerFamily = data.familyName || null;
+    const customerFather = data.fatherName || null;
+    const customerPhone = data.phone || "";
+    const customerAddress = data.address || null;
+    const customerNationalId = data.nationalId || null;
+    const customerEconomicCode = data.economicCode || null;
+    const customerCity = data.city || null;
+    const customerProvince = data.province || null;
 
-    // ====== Insert Customer ======
-    const customerResult = await request
-      .input("CustomerType", sql.Bit, customerType)
-      .input("CustomerName", sql.NVarChar(250), customerName)
-      .input("CustomerFamily", sql.NVarChar(250), customerFamily)
-      .input("CustomerDad", sql.NVarChar(250), customerFather)
-      .input("CustomerMeli", sql.NVarChar(250), customerNationalId)
-      .input("CustomerNumber", sql.NVarChar(250), customerPhone)
-      .input("CustomerAdres", sql.NVarChar(sql.MAX), customerAddress)
-      .input("CustomerCodEghtesadi", sql.NVarChar(200), customerEconomicCode)
-      .input("CustomerCity", sql.NVarChar(50), customerCity)
-      .input("CustomerPrivonec", sql.NVarChar(50), customerProvince)
-      .input("CustomerHaghighi", sql.Bit, customerHaghighi)
-      .query(`
-        INSERT INTO Customer
-        (
-          CustomerType,
-          CustomerName,
-          CustomerFamily,
-          CustomerDad,
-          CustomerMeli,
-          CustomerNumber,
-          CustomerAdres,
-          CustomerCodEghtesadi,
-          CustomerCity,
-          CustomerPrivonec,
-          CustomerHaghighi,
-          CustomerEdDate
-        )
-        OUTPUT INSERTED.CustomerPuid
-        VALUES
-        (
-          @CustomerType,
-          @CustomerName,
-          @CustomerFamily,
-          @CustomerDad,
-          @CustomerMeli,
-          @CustomerNumber,
-          @CustomerAdres,
-          @CustomerCodEghtesadi,
-          @CustomerCity,
-          @CustomerPrivonec,
-          @CustomerHaghighi,
-          GETDATE()
-        )
-      `);
+    if (type === "person" && (!customerName || !customerFamily || !customerNationalId)) {
+      throw new Error("نام، نام خانوادگی و کد ملی الزامی است");
+    }
 
-    const customerPuid = customerResult.recordset[0].CustomerPuid;
+    if (type === "company" && !customerName) {
+      throw new Error("نام شرکت الزامی است");
+    }
 
-    // ====== Get new factor number ======
-    const maxNumberResult = await request.query(`
+    if (!customerPhone) {
+      throw new Error("شماره تماس الزامی است");
+    }
+
+    /* ======================
+       FIND / INSERT CUSTOMER
+    ====================== */
+    let customerPuid: number | null = null;
+
+    if (customerNationalId) {
+      const checkReq = new sql.Request(transaction);
+      const existing = await checkReq
+        .input("meli", sql.NVarChar(50), customerNationalId)
+        .query(`SELECT CustomerPuid FROM Customer WHERE CustomerMeli = @meli`);
+
+      if (existing.recordset.length > 0) {
+        customerPuid = existing.recordset[0].CustomerPuid;
+      }
+    }
+
+    if (!customerPuid) {
+      const insertReq = new sql.Request(transaction);
+      const result = await insertReq
+        .input("CustomerType", sql.Bit, customerType)
+        .input("CustomerName", sql.NVarChar(250), customerName)
+        .input("CustomerFamily", sql.NVarChar(250), customerFamily)
+        .input("CustomerDad", sql.NVarChar(250), customerFather)
+        .input("CustomerMeli", sql.NVarChar(50), customerNationalId)
+        .input("CustomerNumber", sql.NVarChar(50), customerPhone)
+        .input("CustomerAdres", sql.NVarChar(sql.MAX), customerAddress)
+        .input("CustomerCodEghtesadi", sql.NVarChar(200), customerEconomicCode)
+        .input("CustomerCity", sql.NVarChar(50), customerCity)
+        .input("CustomerPrivonec", sql.NVarChar(50), customerProvince)
+        .input("CustomerHaghighi", sql.Bit, customerHaghighi)
+        .query(`
+          INSERT INTO Customer
+          (CustomerType, CustomerName, CustomerFamily, CustomerDad, CustomerMeli,
+           CustomerNumber, CustomerAdres, CustomerCodEghtesadi,
+           CustomerCity, CustomerPrivonec, CustomerHaghighi, CustomerEdDate)
+          OUTPUT INSERTED.CustomerPuid
+          VALUES
+          (@CustomerType, @CustomerName, @CustomerFamily, @CustomerDad, @CustomerMeli,
+           @CustomerNumber, @CustomerAdres, @CustomerCodEghtesadi,
+           @CustomerCity, @CustomerPrivonec, @CustomerHaghighi, GETDATE())
+        `);
+
+      customerPuid = result.recordset[0].CustomerPuid;
+    }
+
+    if (!customerPuid) {
+      throw new Error("خطا در ثبت مشتری");
+    }
+
+    /* ======================
+       INSERT SELL HEADER
+    ====================== */
+    const numberReq = new sql.Request(transaction);
+    const numberResult = await numberReq.query(`
       SELECT ISNULL(MAX(ReqHeaderNumber), 0) + 1 AS NewNumber
       FROM RequestSellHeader WITH (UPDLOCK, HOLDLOCK)
     `);
 
-    const factorNumber = maxNumberResult.recordset[0].NewNumber;
+    const factorNumber = numberResult.recordset[0].NewNumber;
 
-    // ====== Insert RequestSellHeader ======
-    const headerResult = await request
+    const headerReq = new sql.Request(transaction);
+    const headerResult = await headerReq
       .input("ReqHeaderNumber", sql.Int, factorNumber)
       .input("ReqHeaderOffType", sql.Bit, 0)
       .input("ReqHeaderOffValue", sql.Decimal(18, 0), 0)
       .input("ReqSellHeaderKalaExtra", sql.Decimal(18, 0), 0)
-      .input("ReqHeaderCount", sql.Int, data.items?.length || 0)
-      .input("ReqHeaderUser", sql.Int, data.userPuid || 0)
-      .input("ReqHeaderSellerPuid", sql.Int, data.sellerPuid || 0)
+      .input("ReqHeaderCount", sql.Int, data.items.length)
+      .input("ReqHeaderUser", sql.Int, data.userPuid)
+      .input("ReqHeaderSellerPuid", sql.Int, data.sellerPuid || 1)
       .input("ReqHeaderPaymentPuid", sql.Int, 1)
       .input("ReqHeaderAllPrice", sql.Decimal(18, 0), data.totalPrice || 0)
       .input("ReqHeaderEnable", sql.Bit, 1)
@@ -102,143 +120,97 @@ export async function POST(req: Request) {
       .input("ReciveAnbar", sql.Bit, 0)
       .input("AcseptComplete", sql.Bit, 0)
       .input("BalanceType", sql.Int, 0)
-      .input("ReqHeaderDescription", sql.NVarChar(sql.MAX), data.description || null)
+      .input("ReqHeaderDescription", sql.NVarChar(sql.MAX), "خرید از سایت")
       .input("FinishSell", sql.Bit, 0)
       .input("ReqHeaderMande", sql.Decimal(18, 0), data.totalPrice || 0)
       .input("ReqHeaderTypeCustomer", sql.Bit, 1)
-      .input("ReqHeaderPersonelPuid", sql.Int, data.userPuid || 0)
+      .input("ReqHeaderPersonelPuid", sql.Int, data.userPuid)
       .query(`
         INSERT INTO RequestSellHeader
-        (
-          ReqHeaderNumber,
-          ReqHeaderOffType,
-          ReqHeaderOffValue,
-          ReqSellHeaderKalaExtra,
-          ReqHeaderCount,
-          ReqHeaderUser,
-          ReqHeaderSellerPuid,
-          ReqHeaderPaymentPuid,
-          ReqHeaderAllPrice,
-          ReqHeaderDatetime,
-          ReqHeaderEnable,
-          ReqHeaderType,
-          ReqHeaderCustomerPuid,
-          Standard,
-          Baskol,
-          SaveOperation,
-          ReciveAnbar,
-          AcseptComplete,
-          BalanceType,
-          ReqHeaderDescription,
-          FinishSell,
-          ReqHeaderMande,
-          ReqHeaderTypeCustomer,
-          ReqHeaderPersonelPuid
-        )
+        (ReqHeaderNumber, ReqHeaderOffType, ReqHeaderOffValue, ReqSellHeaderKalaExtra,
+         ReqHeaderCount, ReqHeaderUser, ReqHeaderSellerPuid,
+         ReqHeaderPaymentPuid, ReqHeaderAllPrice, ReqHeaderDatetime,
+         ReqHeaderEnable, ReqHeaderType, ReqHeaderCustomerPuid,
+         Standard, Baskol, SaveOperation, ReciveAnbar, AcseptComplete,
+         BalanceType, ReqHeaderDescription, FinishSell,
+         ReqHeaderMande, ReqHeaderTypeCustomer, ReqHeaderPersonelPuid)
         OUTPUT INSERTED.ReqHeaderPuid
         VALUES
-        (
-          @ReqHeaderNumber,
-          @ReqHeaderOffType,
-          @ReqHeaderOffValue,
-          @ReqSellHeaderKalaExtra,
-          @ReqHeaderCount,
-          @ReqHeaderUser,
-          @ReqHeaderSellerPuid,
-          @ReqHeaderPaymentPuid,
-          @ReqHeaderAllPrice,
-          GETDATE(),
-          @ReqHeaderEnable,
-          @ReqHeaderType,
-          @ReqHeaderCustomerPuid,
-          @Standard,
-          @Baskol,
-          @SaveOperation,
-          @ReciveAnbar,
-          @AcseptComplete,
-          @BalanceType,
-          @ReqHeaderDescription,
-          @FinishSell,
-          @ReqHeaderMande,
-          @ReqHeaderTypeCustomer,
-          @ReqHeaderPersonelPuid
-        )
+        (@ReqHeaderNumber, @ReqHeaderOffType, @ReqHeaderOffValue, @ReqSellHeaderKalaExtra,
+         @ReqHeaderCount, @ReqHeaderUser, @ReqHeaderSellerPuid,
+         @ReqHeaderPaymentPuid, @ReqHeaderAllPrice, GETDATE(),
+         @ReqHeaderEnable, @ReqHeaderType, @ReqHeaderCustomerPuid,
+         @Standard, @Baskol, @SaveOperation, @ReciveAnbar, @AcseptComplete,
+         @BalanceType, @ReqHeaderDescription, @FinishSell,
+         @ReqHeaderMande, @ReqHeaderTypeCustomer, @ReqHeaderPersonelPuid)
       `);
 
     const headerPuid = headerResult.recordset[0].ReqHeaderPuid;
 
-    // ====== Insert Items ======
-    const items = data.items || [];
-    for (const item of items) {
-      const itemRequest = new sql.Request(transaction);
-      await itemRequest
-        .input("ReqSellMainPuidKala", sql.Int, item.kalaPuid || 0)
-        .input("ReqSellMainVahedPuid", sql.Int, item.vahedPuid || 0)
-        .input("ReqSellMainKalaCountAccept", sql.Decimal(18, 0), item.qty || 0)
-        .input("ReqSellMainKalaCountSell", sql.Decimal(18, 0), item.qty || 0)
+    /* ======================
+       INSERT SELL MAIN ITEMS
+    ====================== */
+    if (!Array.isArray(data.items) || data.items.length === 0) {
+      throw new Error("سبد خرید خالی است");
+    }
+
+    for (const item of data.items) {
+      if (!item.kalaPuid) {
+        throw new Error("کد کالا نامعتبر است");
+      }
+
+      const qty = Number(item.qty);
+      if (!qty || qty <= 0) {
+        throw new Error("تعداد کالا نامعتبر است");
+      }
+
+      const itemReq = new sql.Request(transaction);
+
+      await itemReq
+        .input("ReqSellMainHeaderPuid", sql.Int, headerPuid)
+        .input("ReqSellMainPuidKala", sql.Int, item.kalaPuid)
+        .input("ReqSellMainVahedPuid", sql.Int, item.vahedPuid || 1)
+        .input("ReqSellMainKalaCountAccept", sql.Decimal(18, 0), qty)
+        .input("ReqSellMainKalaCountSell", sql.Decimal(18, 0), qty)
         .input("ReqSellMainKalaPrice", sql.Decimal(18, 0), item.price || 0)
         .input("ReqSellMainKalaOffType", sql.Bit, item.offType || 0)
         .input("ReqSellMainKalaOff", sql.Decimal(18, 0), item.offValue || 0)
-        .input("ReqSellMainHeaderPuid", sql.Int, headerPuid)
-        .input("ReqSellUserId", sql.Int, data.userPuid || 0)
+        .input("ReqSellUserId", sql.Int, data.userPuid)
         .input("ReqSellBaskol", sql.Bit, 0)
         .input("ReqSellBaskolMande", sql.Decimal(18, 0), 0)
         .input("ReqSellMainMarjoeCount", sql.Decimal(18, 0), 0)
         .input("ReqSellMainMarjoeEnable", sql.Bit, 0)
-        .input("ReqSellMainKalaCount", sql.Decimal(18, 0), item.qty || 0)
+        .input("ReqSellMainMarjoeDatetime", sql.DateTime, new Date())
+        .input("ReqSellMainKalaCount", sql.Decimal(18, 0), qty)
         .input("ReqSellBaskolValue", sql.Decimal(18, 0), 0)
-        .input("ReqSellRefrens", sql.NVarChar(50), null)
+        .input("ReqSellRefrens", sql.NVarChar(50), item.ref || null)
         .input("ReqSellMainTax", sql.Decimal(18, 0), item.tax || 0)
-        .input("ReqSellMainAnbar", sql.Int, data.anbarPuid || 0)
+        .input("ReqSellMainAnbar", sql.Int, data.anbarPuid || 1)
+        .input("ReqSellDatetime", sql.DateTime, new Date())
         .query(`
           INSERT INTO RequestSellMain
-          (
-            ReqSellMainPuidKala,
-            ReqSellMainVahedPuid,
-            ReqSellMainKalaCountAccept,
-            ReqSellMainKalaCountSell,
-            ReqSellMainKalaPrice,
-            ReqSellMainKalaOffType,
-            ReqSellMainKalaOff,
-            ReqSellMainHeaderPuid,
-            ReqSellDatetime,
-            ReqSellUserId,
-            ReqSellBaskol,
-            ReqSellBaskolMande,
-            ReqSellMainMarjoeCount,
-            ReqSellMainMarjoeEnable,
-            ReqSellMainKalaCount,
-            ReqSellBaskolValue,
-            ReqSellRefrens,
-            ReqSellMainTax,
-            ReqSellMainAnbar
-          )
+          (ReqSellMainHeaderPuid, ReqSellMainPuidKala, ReqSellMainVahedPuid,
+           ReqSellMainKalaCountAccept, ReqSellMainKalaCountSell,
+           ReqSellMainKalaPrice, ReqSellMainKalaOffType, ReqSellMainKalaOff,
+           ReqSellUserId, ReqSellBaskol, ReqSellBaskolMande,
+           ReqSellMainMarjoeCount, ReqSellMainMarjoeEnable,
+           ReqSellMainMarjoeDatetime, ReqSellMainKalaCount,
+           ReqSellBaskolValue, ReqSellRefrens, ReqSellMainTax,
+           ReqSellMainAnbar, ReqSellDatetime)
           VALUES
-          (
-            @ReqSellMainPuidKala,
-            @ReqSellMainVahedPuid,
-            @ReqSellMainKalaCountAccept,
-            @ReqSellMainKalaCountSell,
-            @ReqSellMainKalaPrice,
-            @ReqSellMainKalaOffType,
-            @ReqSellMainKalaOff,
-            @ReqSellMainHeaderPuid,
-            GETDATE(),
-            @ReqSellUserId,
-            @ReqSellBaskol,
-            @ReqSellBaskolMande,
-            @ReqSellMainMarjoeCount,
-            @ReqSellMainMarjoeEnable,
-            @ReqSellMainKalaCount,
-            @ReqSellBaskolValue,
-            @ReqSellRefrens,
-            @ReqSellMainTax,
-            @ReqSellMainAnbar
-          )
+          (@ReqSellMainHeaderPuid, @ReqSellMainPuidKala, @ReqSellMainVahedPuid,
+           @ReqSellMainKalaCountAccept, @ReqSellMainKalaCountSell,
+           @ReqSellMainKalaPrice, @ReqSellMainKalaOffType, @ReqSellMainKalaOff,
+           @ReqSellUserId, @ReqSellBaskol, @ReqSellBaskolMande,
+           @ReqSellMainMarjoeCount, @ReqSellMainMarjoeEnable,
+           @ReqSellMainMarjoeDatetime, @ReqSellMainKalaCount,
+           @ReqSellBaskolValue, @ReqSellRefrens, @ReqSellMainTax,
+           @ReqSellMainAnbar, @ReqSellDatetime)
         `);
     }
 
     await transaction.commit();
+    console.log("Transaction committed");
 
     return NextResponse.json({
       success: true,
@@ -248,15 +220,11 @@ export async function POST(req: Request) {
       headerPuid
     });
 
-  } catch (error) {
-    await transaction.rollback();
-    console.error("Error in /api/customer:", error);
-
+  } catch (error: any) {
+    console.error("API ERROR:", error);
+    try { await transaction.rollback(); } catch {}
     return NextResponse.json(
-      {
-        success: false,
-        message: "خطا در ثبت سفارش"
-      },
+      { success: false, message: error.message },
       { status: 500 }
     );
   }

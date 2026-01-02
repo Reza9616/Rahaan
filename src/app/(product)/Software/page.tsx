@@ -15,6 +15,7 @@ interface Product {
   KalaType: number;
   KalaGroup: number;
   Price: number;
+  image?: string;
 }
 
 const PRODUCT_TYPES = [
@@ -47,23 +48,16 @@ export default function ProductsPage() {
 
   const { setCart } = useCart(); // اتصال به سبد خرید
 
- const addModuleToCart = (product: Product) => {
-  const cartModule: Module = {
-    name: product.KalaName,
-    price: product.Price,
-    qty: 1,
-    puid: product.KalaPuID, // ✅ اصلاح شد
-  };
-
+const addModuleToCart = (module: Module) => {
   setCart(prev => {
-    const existing = prev.modules.find(m => m.name === cartModule.name);
+    const existing = prev.modules.find(m => m.name === module.name);
     let updatedModules;
     if (existing) {
       updatedModules = prev.modules.map(m =>
-        m.name === cartModule.name ? { ...m, qty: m.qty + 1 } : m
+        m.name === module.name ? { ...m, qty: m.qty + module.qty } : m
       );
     } else {
-      updatedModules = [...prev.modules, cartModule];
+      updatedModules = [...prev.modules, module]; // از qty که فرستاده شده استفاده کن
     }
     return { ...prev, modules: updatedModules };
   });
@@ -158,9 +152,26 @@ export default function ProductsPage() {
                           {p.Price.toLocaleString("fa-IR")} تومان
                         </div>
                       )}
-                      <div className="h-48 bg-slate-200 rounded-t-3xl flex items-center justify-center text-slate-400">
-                        تصویر محصول
-                      </div>
+                     <div className="relative overflow-hidden rounded-t-3xl group cursor-pointer">
+ <img 
+  src={
+    p.KalaGroup === 20 // نرم‌افزاری
+      ? p.image || "/gold.jpg" // فایل در public/gold.png
+      : p.image || "/gold.jpg"
+  }
+  alt={p.KalaName}
+  className="w-full h-48 object-cover transition-all duration-300 group-hover:brightness-90 group-hover:scale-105"
+/>
+  
+  {/* حاشیه گرادیانت مشکی از پایین هنگام hover */}
+  <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+  {/* توضیحات روی حاشیه هنگام hover */}
+  <div className="absolute bottom-4 left-4 right-4 text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-4 group-hover:translate-y-0">
+    <p className="font-semibold">{p.KalaName}</p>
+    <p className="text-xs opacity-90">کد کالا: {p.KalaCod}</p>
+  </div>
+</div>
                       <div className="p-6">
                         <h3 className="font-bold text-lg text-[#4f89c9] mb-2">{p.KalaName}</h3>
                         <p className="text-sm text-slate-500 mb-4">کد کالا: {p.KalaCod}</p>
@@ -169,15 +180,21 @@ export default function ProductsPage() {
                             قیمت تماس بگیرید
                           </span>
                         )}
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => addModuleToCart(p)} // وصل شد به سبد خرید
-                          className="w-full py-5 rounded-2xl bg-[#4f89c9] text-white flex gap-2 justify-center font-semibold"
-                        >
-                          <ShoppingCart className="w-5 h-5" />
-                          افزودن به سبد خرید
-                        </motion.button>
+                    <motion.button
+  whileHover={{ scale: 1.05 }}
+  whileTap={{ scale: 0.95 }}
+  onClick={() => addModuleToCart({
+    name: p.KalaName,
+    price: p.Price,
+    qty: 1,
+    puid: p.KalaPuID
+  })}
+  className="w-full py-5 rounded-2xl bg-[#4f89c9] text-white flex gap-2 justify-center font-semibold"
+>
+  <ShoppingCart className="w-5 h-5" />
+  افزودن به سبد خرید
+</motion.button>
+
                       </div>
                     </motion.div>
                   ))

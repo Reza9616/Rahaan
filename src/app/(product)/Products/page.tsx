@@ -7,6 +7,7 @@ import { Search, ShoppingCart, Filter, Check, Building2, Sparkles, LayoutGrid } 
 import { motion, AnimatePresence } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { useCart, Module } from "@/context/CartContext";
+
 interface Product {
   KalaPuID: number;
   KalaName: string;
@@ -14,9 +15,8 @@ interface Product {
   KalaType: number;
   KalaGroup: number;
   Price: number;
+  image?: string; // اختیاری
 }
-
-
 
 const PRODUCT_TYPES = [
   { id: 1, label: "سازمانی" },
@@ -47,23 +47,27 @@ export default function ProductsPage() {
   const [tag, setTag] = useState<number | null>(null);
   const [selectedLevel, setSelectedLevel] = useState("all");
 
- const addModuleToCart = (product: Product) => {
-  const cartModule: Module = {
-    name: product.KalaName,
-    price: product.Price,
-    qty: 1,
-    puid: product.KalaPuID, // ✅ اصلاح شد
+  // ===== اضافه کردن محصول به سبد خرید =====
+  const addModuleToCart = (product: Product) => {
+    const module: Module = {
+      name: product.KalaName,
+      price: product.Price,
+      qty: 1,
+      puid: product.KalaPuID,
+    };
+
+    setCart(prev => {
+      // بررسی تکراری بودن محصول
+      const existing = prev.modules.find(m => m.puid === module.puid);
+      const updatedModules = existing
+        ? prev.modules.map(m => m.puid === module.puid ? { ...m, qty: m.qty + 1 } : m)
+        : [...prev.modules, module];
+
+      return { ...prev, modules: updatedModules };
+    });
   };
 
-  setCart(prev => {
-    const existing = prev.modules.find(m => m.name === cartModule.name);
-    const updatedModules = existing
-      ? prev.modules.map(m => m.name === cartModule.name ? { ...m, qty: m.qty + 1 } : m)
-      : [...prev.modules, cartModule];
-
-    return { ...prev, modules: updatedModules };
-  });
-};
+  // ===== بارگذاری محصولات =====
   useEffect(() => {
     setLoading(true);
     const params = new URLSearchParams();
@@ -85,44 +89,28 @@ export default function ProductsPage() {
     <>
       <NavigationMenuDemo />
 
-   <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-[#4f89c9]/5 to-transparent" />
         <div className="absolute top-20 right-20 w-72 h-72 bg-[#4f89c9]/10 rounded-full blur-3xl" />
         <div className="absolute bottom-10 left-10 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl" />
-        
-        <div className="mt-10 max-w-7xl mx-auto px-6 pt-20 pb-12 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-center"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#4f89c9]/10 text-[#4f89c9] text-sm font-medium mb-6"
-            >
-              <Sparkles className="w-4 h-4 text-[#4f89c9]"  />
-              مجموعه کامل قطعات سخت افزاری
+        <div className="mt-10 max-w-7xl mx-auto px-6 pt-20 pb-12 relative text-center">
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#4f89c9]/10 text-[#4f89c9] text-sm font-medium mb-6">
+              <Sparkles className="w-4 h-4 text-[#4f89c9]" /> مجموعه کامل قطعات سخت افزاری
             </motion.div>
-            
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black mb-6">
-              <span className="bg-gradient-to-l from-[#4f89c9] via-[#4f89c9] to-[#4f89c9] bg-clip-text text-transparent">
-              رهان 
-              </span>
+              <span className="bg-gradient-to-l from-[#4f89c9] via-[#4f89c9] to-[#4f89c9] bg-clip-text text-transparent">رهان</span>
             </h1>
-            
-            <p className="text-xl md:text-2xl text-[#4f89c9] max-w-3xl mx-auto leading-relaxed">
-                 قطعات سخت افزاری  
-            </p>
+            <p className="text-xl md:text-2xl text-[#4f89c9] max-w-3xl mx-auto leading-relaxed">قطعات سخت افزاری</p>
           </motion.div>
         </div>
       </section>
+
       <main dir="rtl" className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 px-6 py-12">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-[1fr_340px] gap-10">
 
-          {/* ===== Products ===== */}
+          {/* ===== Products Grid ===== */}
           <div>
             <div className="relative mb-8">
               <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -153,20 +141,25 @@ export default function ProductsPage() {
                           {p.Price.toLocaleString("fa-IR")} تومان
                         </div>
                       )}
-                      <div className="h-48 bg-slate-200 rounded-t-3xl flex items-center justify-center text-slate-400">
-                        تصویر محصول
-                      </div>
+                  <div className="relative overflow-hidden rounded-t-3xl group cursor-pointer">
+  <img 
+    src={p.image || "https://img.freepik.com/premium-photo/computer-components-black-background_160097-299.jpg"} // عکس واقعی پیش‌فرض
+    alt={p.KalaName}
+    className="w-full h-48 object-cover transition-all duration-300 group-hover:brightness-90 group-hover:scale-105"
+  />
+  
+  {/* حاشیه گرادیانت مشکی از پایین هنگام hover */}
+  <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+  {/* توضیحات روی حاشیه هنگام hover */}
+  <div className="absolute bottom-4 left-4 right-4 text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 translate-y-4 group-hover:translate-y-0">
+    <p className="font-semibold">{p.KalaName}</p>
+    <p className="text-xs opacity-90">کد کالا: {p.KalaCod}</p>
+  </div>
+</div>
                       <div className="p-6">
                         <h3 className="font-bold text-lg text-[#4f89c9] mb-2">{p.KalaName}</h3>
                         <p className="text-sm text-slate-500 mb-4">کد کالا: {p.KalaCod}</p>
-
-                        {p.Price === 0 ? (
-                          <span className="inline-block mb-4 px-3 py-1 rounded-xl bg-slate-100 text-slate-500 text-sm">
-                            قیمت تماس بگیرید
-                          </span>
-                        ) : (
-                          <p className="text-sm text-slate-600 mb-4">{p.Price.toLocaleString()} تومان</p>
-                        )}
 
                         <motion.button
                           whileHover={{ scale: 1.05 }}
@@ -174,8 +167,7 @@ export default function ProductsPage() {
                           onClick={() => addModuleToCart(p)}
                           className="w-full py-5 rounded-2xl bg-[#4f89c9] text-white flex gap-2 justify-center font-semibold"
                         >
-                          <ShoppingCart className="w-5 h-5" />
-                          افزودن به سبد خرید
+                          <ShoppingCart className="w-5 h-5" /> افزودن به سبد خرید
                         </motion.button>
                       </div>
                     </motion.div>
@@ -187,15 +179,13 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          {/* ===== Filters ===== */}
+          {/* ===== Filters Sidebar ===== */}
           <aside className="sticky top-8 h-fit space-y-6">
-            {/* Type + Tag */}
+            {/* نوع و دسته‌بندی */}
             <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-white">
               <h4 className="font-bold mb-4 text-lg flex items-center gap-2">
                 <Filter className="text-[#4f89c9]" /> فیلتر محصولات
               </h4>
-
-              {/* Type */}
               <div className="mb-6">
                 <h5 className="font-bold mb-2">نوع محصول</h5>
                 <div className="grid grid-cols-2 gap-3">
@@ -204,9 +194,7 @@ export default function ProductsPage() {
                       key={t.id}
                       onClick={() => setType(t.id)}
                       className={`p-3 rounded-xl border text-sm font-semibold ${
-                        type === t.id
-                          ? "border-[#4f89c9] bg-[#4f89c9]/10 text-[#4f89c9]"
-                          : "border-slate-200 text-slate-600"
+                        type === t.id ? "border-[#4f89c9] bg-[#4f89c9]/10 text-[#4f89c9]" : "border-slate-200 text-slate-600"
                       }`}
                     >
                       {t.label}
@@ -218,7 +206,6 @@ export default function ProductsPage() {
                 </div>
               </div>
 
-              {/* Tags */}
               <div>
                 <h5 className="font-bold mb-2">دسته‌بندی</h5>
                 <div className="flex flex-wrap gap-2">
@@ -227,9 +214,7 @@ export default function ProductsPage() {
                       key={t.id}
                       onClick={() => setTag(t.id)}
                       className={`px-4 py-2 rounded-xl text-sm ${
-                        tag === t.id
-                          ? "bg-gradient-to-l from-[#4f89c9] to-indigo-600 text-white shadow"
-                          : "bg-slate-100 text-slate-600"
+                        tag === t.id ? "bg-gradient-to-l from-[#4f89c9] to-indigo-600 text-white shadow" : "bg-slate-100 text-slate-600"
                       }`}
                     >
                       {t.label}
@@ -267,10 +252,7 @@ export default function ProductsPage() {
                       }`}
                     >
                       {selectedLevel === level.id && (
-                        <motion.div
-                          layoutId="levelIndicator"
-                          className="absolute top-2 left-2 w-5 h-5 rounded-full bg-[#4f89c9] flex items-center justify-center"
-                        >
+                        <motion.div layoutId="levelIndicator" className="absolute top-2 left-2 w-5 h-5 rounded-full bg-[#4f89c9] flex items-center justify-center">
                           <Check className="w-3 h-3 text-white" />
                         </motion.div>
                       )}
@@ -281,8 +263,8 @@ export default function ProductsPage() {
                 })}
               </div>
             </div>
-
           </aside>
+
         </div>
       </main>
 

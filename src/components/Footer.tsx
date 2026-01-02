@@ -1,9 +1,11 @@
-import { Footerdemo } from "@/components/ui/footer-section";
+import FooterDemo from "./ui/footer-section";
+
+ 
 
 function Footer() {
   return (
     <div className="block">
-      <Footerdemo />
+      <FooterDemo />
     </div>
   );
 }
